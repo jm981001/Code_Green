@@ -758,23 +758,7 @@ public class ManagerController {
 		return "manager/order_detail";
 	}
 
-	// ------------주문 수정 - 원본글 불러오기------------------------------------------
 
-//	@GetMapping(value = "/order_modify")
-//	public String order_modify(Model model, HttpSession session,
-//			@RequestParam(name = "item_idx", required = false) String item_idx,@RequestParam String sell_order_number) {
-//
-//		String sId = (String) session.getAttribute("sId");
-//
-//		List<SellVO> orderInfo = service.getOrderInfo(sId ,sell_order_number);
-//		System.out.println("번호:" + item_idx);
-//
-//		model.addAttribute("orderInfo", orderInfo);
-//		model.addAttribute("item_idx", item_idx);
-//
-//		return "manager/product_modify";
-//	}
-//	
 	// ========================= 주문 내용 수정 ===============================
 	@GetMapping(value = "order_modify")
 	public String order_modify(Model model, HttpSession session, String sell_idx) {

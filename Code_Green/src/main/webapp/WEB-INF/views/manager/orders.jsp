@@ -32,7 +32,6 @@
     		$("#sell_status").html(value);
 		}
     
-    
     </script>
     
 </head>
