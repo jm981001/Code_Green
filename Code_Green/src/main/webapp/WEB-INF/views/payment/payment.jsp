@@ -158,7 +158,7 @@
                                         <div class="ps-block__panel">
                                             <figure><small>배송비</small><strong>${map.fee}원</strong></figure>
                                         </div>
-                                        <h4>Coin</h4>
+                                        <h4>적립금</h4>
                                         <div class="ps-block__panel">
                                             <figure><small>전체 적립금</small><strong>${coin.coin_total }원</strong></figure>
                                             <figure><small>사용한 적립금</small><input type="text" class="coin_use"> <input type="button" value="USE" onclick="coinUse()" style="float: right;"></figure>
