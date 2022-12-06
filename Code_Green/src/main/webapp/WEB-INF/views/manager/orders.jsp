@@ -5,7 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -127,8 +126,10 @@
 <%-- 						     <td>${order.sell_pay_date}</td> --%>
 <%-- 						     <td>${order.manager_brandname}</td> --%>
 						      <td>
+<!--                                    <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a> -->
+<!--                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="shipping_success()">배송완료</a></div> -->
                                    <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
-                                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="shipping_success()">배송완료</a></div>
+                                   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item"  href="order_modify?sell_idx=${order.sell_idx }">배송완료</a></div>
                                    </div>
                                  </td>
 						    </tr>     

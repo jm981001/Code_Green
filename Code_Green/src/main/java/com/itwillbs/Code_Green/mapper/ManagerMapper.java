@@ -53,7 +53,7 @@ public interface ManagerMapper {
      
 	//상품 갯수 조회
 	public int selectItemListCount(
-			@Param("searchType") String searchType,@Param("keyword")  String keyword,@Param("id") String id);
+			@Param("searchType") String searchType,@Param("keyword") String keyword,@Param("id") String id);
 	
 	// 새 상품등록 - 텍스트
 	public int insertProducts(@Param("item")ItemVO item, @Param("manager_idx")int manager_idx);
@@ -124,7 +124,7 @@ public interface ManagerMapper {
 	 //주문 상세 조회  
 	 public List<SellVO> selectOrderInfo(@Param("sId")String sId, @Param("sell_order_number")String sell_order_number);
 	 //주문 수정
-	 public int updateOrders(ItemVO item);
+	 public int updateOrders(int sell_idx2);
 	//총매출
 	public SellVO selectTotalMoney();
 
@@ -156,8 +156,6 @@ public interface ManagerMapper {
 	//순수익
 	public SellVO selectNet(String sId);
 //	public Map<String, String> selectNet(String sId);
-	
-	
 	
 	
 	

@@ -3,7 +3,6 @@ package com.itwillbs.Code_Green.vo;
 import org.springframework.web.multipart.MultipartFile;
 
 public class ManagerVO {
-	
 	private int         manager_idx; 
 	private String  	manager_id;
 	private String  	manager_pass;

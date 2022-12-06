@@ -754,34 +754,37 @@ public class ManagerController {
 
 	// ------------주문 수정 - 원본글 불러오기------------------------------------------
 
-	@GetMapping(value = "/order_modify")
-	public String order_modify(Model model, HttpSession session,
-			@RequestParam(name = "item_idx", required = false) String item_idx,@RequestParam String sell_order_number) {
-
-		String sId = (String) session.getAttribute("sId");
-
-		List<SellVO> orderInfo = service.getOrderInfo(sId ,sell_order_number);
-		System.out.println("번호:" + item_idx);
-
-		model.addAttribute("orderInfo", orderInfo);
-		model.addAttribute("item_idx", item_idx);
-
-		return "manager/product_modify";
-	}
-	
+//	@GetMapping(value = "/order_modify")
+//	public String order_modify(Model model, HttpSession session,
+//			@RequestParam(name = "item_idx", required = false) String item_idx,@RequestParam String sell_order_number) {
+//
+//		String sId = (String) session.getAttribute("sId");
+//
+//		List<SellVO> orderInfo = service.getOrderInfo(sId ,sell_order_number);
+//		System.out.println("번호:" + item_idx);
+//
+//		model.addAttribute("orderInfo", orderInfo);
+//		model.addAttribute("item_idx", item_idx);
+//
+//		return "manager/product_modify";
+//	}
+//	
 	// ========================= 주문  내용 수정 ===============================
-	@PostMapping(value = "order_modifyPro.bo")
-		public String edit_order(@ModelAttribute ItemVO item, Model model,HttpSession session) {
-				
-			int updateCount = service.modifyOrder(item);
-
+	@GetMapping(value = "order_modify")
+		public String order_modify(Model model,HttpSession session,String sell_idx) {
+			
+			int sell_idx2 = Integer.parseInt(sell_idx);
+			
+		    String sId = (String) session.getAttribute("sId");
+		    
+			int updateCount = service.modifyOrder(sell_idx2);
 			System.out.println(updateCount);
 
 			if (updateCount == 0) {
-				model.addAttribute("msg", "주문수정이 되지 않았습니다.<br>다시 시도해 주세요.");
+				model.addAttribute("msg", "주문수정이 되지 않았습니다.다시 시도해 주세요.");
 				return "manager/mn_fail_back";
 			}
-
+			model.addAttribute("updateCount", updateCount);
 			return "redirect:/orders?item_idx=" + item_idx;
 		}
 	
@@ -906,6 +909,7 @@ public class ManagerController {
 			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String keyword) {
 
 		String id = (String) session.getAttribute("sId");
+		
 
 //			System.out.println(pageNum);
 
@@ -1406,7 +1410,6 @@ public class ManagerController {
 
 		return "manager/sales_management";
 	}
-	
 	
 	
 	

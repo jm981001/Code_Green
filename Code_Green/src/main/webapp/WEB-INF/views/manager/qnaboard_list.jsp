@@ -103,6 +103,7 @@
                                     <td>
                                         <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="qnaboard_delete?qna_idx=${qnaList.qna_idx }">삭제</a></div>
+
                                         </div>
                                     </td>
                                 </tr>
@@ -111,7 +112,6 @@
                         </table>
                     </div>
                 </div>
-                            
                               <div class="ps-section__footer">
                        <!-- 페이징 버튼들 시작 -->
 				                   <%PageInfo pageInfo = (PageInfo)request.getAttribute("pageInfo"); %>

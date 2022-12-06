@@ -39,7 +39,6 @@ public class ManagerService {
 		return mapper.selectPasswd(manager_id);
 	}
 	
-	
 	//----------------------브랜드 정보 -------------------------------
 
 //	 브랜드 정보 조회 수행 getManagerInfo()
@@ -194,8 +193,8 @@ public class ManagerService {
 		return mapper.selectOrderInfo(sId,sell_order_number);
 	}
 	//주문 수정
-	public int modifyOrder(ItemVO item) {
-		return mapper.updateOrders(item);
+	public int modifyOrder(int sell_idx2) {
+		return mapper.updateOrders(sell_idx2);
 	}
 	
 	

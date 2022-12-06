@@ -4,7 +4,6 @@ package com.itwillbs.Code_Green.vo;
 public class SellVO {
 	// 전체적인 주문 내역
 	// 주문에 대한 상세는 SellDetailVO => 후에 만들 것
-	
 	private int sell_idx; // 주문테이블 인덱스 번호
 	private int rf_member_idx; // 회원 번호
 	private String sell_amount; // 총 구매 수량 // 상품당 구매 수량은 detail
