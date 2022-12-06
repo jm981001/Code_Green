@@ -79,8 +79,8 @@
          manager_name = #{manager_name},
          manager_brandname = #{manager_brandname},
          manager_storecode = #{manager_storecode},
-          manager_phone = #{manager_phone},
-            manager_email = #{manager_email}, 
+         manager_phone = #{manager_phone},
+          manager_email = #{manager_email}, 
          manager_postcode = #{manager_postcode}, 
          manager_address = #{manager_address} ,
          manager_realfile  = #{manager_realfile},  
@@ -603,20 +603,38 @@
 
    
    <!-- 주문 수정  -->
-      <update id="updateOrders">
-      UPDATE
-             item
-         SET
-            item_name = #{item_name},
-            item_price = #{item_price},
-            item_packing = #{item_packing},
-            item_category = #{item_category},
-            item_info = #{item_info},
-            item_stock = #{item_stock},
-            item_status = #{item_status}
-          WHERE 
-              item_idx = #{item_idx}
-   </update>
+<!--       <update id="updateOrders"> -->
+<!--       UPDATE -->
+<!--              item -->
+<!--          SET -->
+<!--             item_name = #{item_name}, -->
+<!--             item_price = #{item_price}, -->
+<!--             item_packing = #{item_packing}, -->
+<!--             item_category = #{item_category}, -->
+<!--             item_info = #{item_info}, -->
+<!--             item_stock = #{item_stock}, -->
+<!--             item_status = #{item_status} -->
+<!--           WHERE  -->
+<!--               item_idx = #{item_idx} -->
+<!--    </update> -->
+   
+   
+         <!-- 주문 상태 변경 -->
+   <update id="updateOrders">
+		UPDATE 
+		      sell
+		SET
+		   sell_status="배송완료"
+		WHERE
+		   sell_pay_status="결제완료"
+		AND 
+		    sell_idx = #{sell_idx2}
+		    
+       
+       
+       
+ </update>
+   
     
        <!--재고  목록 조회 -->
    <select id="selectStockList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
@@ -772,7 +790,7 @@
                ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
                ifnull(truncate( a.board_star_score,1),0) AS board_star_score,
                    ifnull(s.count,0) as count,
-<!--                    RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking, -->
+                   RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking,
                    ifnull(b.review,0)as review,
                    ifnull(h.heart,0)as heart
                    
