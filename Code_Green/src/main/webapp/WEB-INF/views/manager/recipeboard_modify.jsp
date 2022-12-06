@@ -30,26 +30,16 @@
 <script type="text/javascript" src="/Code_Green/resources/js/jquery-3.6.1.js"> </script>
 <script type="text/javascript">
 
-// 	function myItem(value) {
-		
-// 		let subForm = document.getElementById('sub_form');
-		
-// 		let input = document.createElement('input');
-		
-// 		input.type   = 'hidden';
-		
-// 		input.name  = 'item_idx';
-		
-// 		input.value  = value;
-		
-// 		subForm.appendChild(input);
-		
 
-// 	}
-
+	function selectedOption(value){
+		let item_idx = value;
 	
-
-
+		$("#item_idx").val(value).prop("selected", true);
+	}
+	
+	$(document).ready(function (){
+		selectedOption();
+	});
 </script>
 </head>
 <body>
@@ -105,7 +95,7 @@
 	                                    <tr>
 	                                   		<td>사용한 상품</td>
 	                                   		<td>
-		                                   		<select class="form-select" aria-label="Default select example" onchange="myItem(this.value)" style="float: none;">
+		                                   		<select class="form-select" aria-label="Default select example" id="item_idx" name="item_idx" onclick="selectedOption(this.value)" style="float: none;">
 												  	<option value="">선택하세요</option>
 	                                   				<c:forEach  var="myItem" items="${myItem }">
 												  		<option value="${myItem.item_idx }">${myItem.item_idx } ${myItem.item_name }</option>
