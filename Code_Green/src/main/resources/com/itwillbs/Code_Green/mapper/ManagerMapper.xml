@@ -174,7 +174,6 @@
                   
        WHERE i.item_idx=#{item.itemModify_idx}
    
-
    </select>
    
    <!-- 상품 목록 갯수 조회 -->
@@ -184,6 +183,8 @@
       SELECT 
       COUNT(*)
           FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+       WHERE m.manager_id= #{ id}
+      
       
    
    <if test="!keyword.equals('')">
@@ -546,22 +547,15 @@
    
    <select id="selectOrderListCount" resultType="integer">
    
-      SELECT 
-      COUNT(*)
-              
-               from sell_detail d
-               left join sell s
-               on s.sell_idx = d.rf_sell_idx
-                  left join item i 
-                     on d.RF_ITEM_IDX = i.item_idx
-                   left join file_item f 
-                     on d.RF_ITEM_IDX = f.RF_ITEM_IDX
-                  left join manager m
-                     on m.MANAGER_IDX = i.RE_MANAGER_IDX
-                    where i.RE_MANAGER_IDX =(select manager_idx
-                                 from manager
-                                        where manager_id = #{id})
-                  
+
+             select  COUNT(*)  from sell s 
+		left join sell_detail d
+         on s.sell_idx = d.rf_sell_idx
+		left join item i 
+          on d.rf_item_idx = i.item_idx
+		left join manager m 
+         on m.manager_idx = i.re_manager_idx
+         where m.manager_id = #{id}          
                                         
          <if test="!keyword.equals('')">
             <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
@@ -687,6 +681,7 @@
       SELECT 
       COUNT(*)
           FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+       WHERE m.manager_id= #{ id}
       
    
    <if test="!keyword.equals('')">
@@ -875,7 +870,7 @@
                ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
                ifnull(truncate( a.board_star_score,1),0) AS board_star_score,
                    ifnull(s.count,0) as count,
-<!--                    RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking, -->
+                   RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking,
                    ifnull(b.review,0)as review,
                    ifnull(h.heart,0)as heart
                    
