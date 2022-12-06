@@ -79,7 +79,7 @@
                                 <table class="table ps-table">
                                     <thead>
                                         <tr>
-<!--                                             <th>Top</th> -->
+                                            <th>Top</th>
                                             <th>상품명</th>
                                             <th>후기</th>
                                             <th>좋아요</th>
@@ -90,7 +90,7 @@
                                     <tbody>
                                     <c:forEach var="top" items="${top3 }">
                                         <tr>
-<%--                                             <td>${top.ranking }위</td> --%>
+                                            <td>${top.ranking }위</td>
                                             <td><strong>${top.item_name}</strong></td>
                                             <td><a href=""><strong>${top.review}개</strong></a></td>
                                             <td><span><strong>${top.heart}개</strong></span></td>
