@@ -29,12 +29,13 @@
     <script type="text/javascript">
 	function confirmDelete(idx, type) {
 		
-		let result = confirm("게시글을 삭제하시겠습니까?");
+		let result = confirm("후기글을 삭제하시겠습니까?");
 		
 		if(result) {
 			location.href="ad_BoardRemove?board_idx="+ idx + "&board_type=" + type;
 		}
-		history.back();
+		alert("후기글이 삭제되었습니다");
+		history.go(0);
 	}
 </script>
 </head>

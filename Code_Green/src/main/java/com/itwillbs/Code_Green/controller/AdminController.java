@@ -58,7 +58,7 @@ public class AdminController {
 	//------------메인페이지----------------------------
 	@RequestMapping(value = "main", method = RequestMethod.GET)
 	public String main() {
-		return "main/main";
+		return "redirect:/";
 	}
 	
 

@@ -113,9 +113,6 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="ps-form__right">
-                                <button class="ps-btn ps-btn--gray"><i class="icon icon-funnel mr-2"></i>Filter</button>
-                            </div>
                         </form>
                     </div>
 <!--                     <div class="ps-section__actions"><a class="ps-btn success" href="#"><i class="icon icon-plus mr-2"></i>입점관리</a></div> -->

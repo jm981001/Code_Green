@@ -103,7 +103,11 @@
 				      <td scope="row" rowspan="2">내용</td>
 				    </tr>
 				    <tr>
-				      <td colspan="4">${commuDetail.board_content } ${commuDetail.file1 }</td>
+				      <td colspan="4">${commuDetail.board_content }
+				      <img alt="" src="/Code_Green/resources/commUpload/${commuDetail.file1 }">
+				      <img alt="" src="/Code_Green/resources/commUpload/${commuDetail.file2 }">
+				      <img alt="" src="/Code_Green/resources/commUpload/${commuDetail.file3 }">
+				      </td>
 				    </tr>
 				  </tbody>
 				</table>

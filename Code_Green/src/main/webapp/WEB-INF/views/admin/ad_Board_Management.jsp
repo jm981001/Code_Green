@@ -33,8 +33,9 @@
 		
 		if(result) {
 			location.href="ad_BoardRemove?board_idx="+ idx + "&board_type=" + type;
-			
 		}
+		alert("게시글이 삭제되었습니다");
+		history.go(0);
 	}
 </script>
 </head>
