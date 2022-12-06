@@ -389,10 +389,10 @@ function addHeart(item_idx) {
 <!-- ---------------------------------------------- 내 취향을 잘 아는 상품들 끝------------------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- 레시피 넣을 자리 시작---------------------------------------------------------- -->
 <!--         <div class="ps-banner--organic" data-background="http://itwillbs17.cdn1.cafe24.com/recipeBg.jpg" style="background-repeat: no-repeat; width: 100%; height: 400px"> -->
-        <div class="ps-banner--organic" data-background="http://itwillbs17.cdn1.cafe24.com/recipeBg.jpg" style="height: 430px">
+        <div class="ps-banner--organic" data-background="/Code_Green/resources/img/recipeBg.jpg" style="height: 430px">
             <div class="container">
                 <div class="ps-section__header">
-                    <h3 style="font-weight: bold;">이달의 레시피</h3>
+                    <h3 style="font-weight: bold; padding-top: 20px;">이달의 레시피</h3>
                     <div class="ps-section__nav"><a class="ps-carousel__prev" href=".ps-carousel--testimonials"><i class="icon-chevron-left"></i></a><a class="ps-carousel__next" href=".ps-carousel--testimonials"><i class="icon-chevron-right"></i></a></div>
                 </div>
 	                <div class="ps-section__content">
@@ -401,7 +401,7 @@ function addHeart(item_idx) {
 		                        <div class="ps-block--testimonial">
 		                            <div class="ps-block__header"><a href="recipe_detail.bo?board_idx=${recipe.board_idx}"><img src="/Code_Green/resources/recUpload/${recipe.file1 }" alt=""></a></div>
 		                            <div class="ps-block__content"><i class="icon-quote-close"></i>
-		                                <h4><a href="recipe_detail.bo?board_idx=${recipe.board_idx}">${recipe.board_subject }</a></h4>
+		                                <h4><a href="recipe_detail.bo?board_idx=${recipe.board_idx}" style="color:green; font-weight: 200;">${recipe.board_subject }</a></h4>
 		                                <p><a href="recipe_detail.bo?board_idx=${recipe.board_idx}">${recipe.board_content }</a></p>
 		                            </div>
 		                        </div>
