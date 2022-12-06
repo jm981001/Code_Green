@@ -103,10 +103,7 @@
                                     <th>주문수량</th>
                                     <th>총금액</th>
                                     <th>주문상태</th>
-<!--                                     <th>주문날짜</th> -->
                                     <th>결제여부</th>
-<!--                                     <th>결제일</th> -->
-<!--                                     <th>상품브랜드</th> -->
                                     <th></th>
                                 </tr>
                             </thead>
@@ -125,8 +122,6 @@
 <%-- 						     <td>${order.sell_pay_date}</td> --%>
 <%-- 						     <td>${order.manager_brandname}</td> --%>
 						      <td>
-<!--                                    <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a> -->
-<!--                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" onclick="shipping_success()">배송완료</a></div> -->
                                    <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
                                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item"  href="order_modify?sell_idx=${order.sell_idx }">배송완료</a></div>
                                    </div>
@@ -166,8 +161,6 @@
     <script src="/Code_Green/resources/plugins_manager/jquery.matchHeight-min.js"></script>
     <script src="/Code_Green/resources/plugins_manager/select2/dist/js/select2.full.min.js"></script>
     <script src="/Code_Green/resources/plugins_manager/summernote/summernote-bs4.min.js"></script>
-<!--     <script src="/Code_Green/resources/plugins_manager/apexcharts-bundle/dist/apexcharts.min.js"></script> -->
-    <!-- custom c/Code_Green/resourcese-->
     <script src="/Code_Green/resources/js/main_manager.js"></script>
 </body>
 
