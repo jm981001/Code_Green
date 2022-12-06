@@ -150,11 +150,17 @@ public class ManagerController {
 
 		if (insertCount > 0) { // 가입 성공
 			System.out.println("가입 성공!");
-			return "redirect:/join_result";
+			return "redirect:/join_resultM";
 		} else { // 가입 실패
 			model.addAttribute("msg", "가입 실패!");
 			return "member/fail_back";
 		}
+	}
+
+	// 가입 결과
+	@RequestMapping(value = "/join_resultM", method = RequestMethod.GET)
+	public String join_reult() {
+		return "member/join_resultM";
 	}
 
 	// ------------매니저페이지 메인(로그인시 각 브랜드별
@@ -741,10 +747,10 @@ public class ManagerController {
 
 	// ------------주문 상세----------------------------------------
 	@RequestMapping(value = "order_detail", method = RequestMethod.GET)
-	public String order_detail(Model model, HttpSession session,@RequestParam String sell_order_number) {
+	public String order_detail(Model model, HttpSession session, @RequestParam String sell_order_number) {
 		String sId = (String) session.getAttribute("sId");
 
-		List<SellVO> orderInfo = service.getOrderInfo(sId,sell_order_number);
+		List<SellVO> orderInfo = service.getOrderInfo(sId, sell_order_number);
 		System.out.println("주문 상세 : " + orderInfo);
 
 		model.addAttribute("orderInfo", orderInfo);
@@ -769,27 +775,24 @@ public class ManagerController {
 //		return "manager/product_modify";
 //	}
 //	
-	// ========================= 주문  내용 수정 ===============================
+	// ========================= 주문 내용 수정 ===============================
 	@GetMapping(value = "order_modify")
-		public String order_modify(Model model,HttpSession session,String sell_idx) {
-			
-			int sell_idx2 = Integer.parseInt(sell_idx);
-			
-		    String sId = (String) session.getAttribute("sId");
-		    
-			int updateCount = service.modifyOrder(sell_idx2);
-			System.out.println(updateCount);
+	public String order_modify(Model model, HttpSession session, String sell_idx) {
 
-			if (updateCount == 0) {
-				model.addAttribute("msg", "주문수정이 되지 않았습니다.다시 시도해 주세요.");
-				return "manager/mn_fail_back";
-			}
-			model.addAttribute("updateCount", updateCount);
-			return "redirect:/orders?item_idx=" + item_idx;
+		int sell_idx2 = Integer.parseInt(sell_idx);
+
+		String sId = (String) session.getAttribute("sId");
+
+		int updateCount = service.modifyOrder(sell_idx2);
+		System.out.println(updateCount);
+
+		if (updateCount == 0) {
+			model.addAttribute("msg", "주문수정이 되지 않았습니다.다시 시도해 주세요.");
+			return "manager/mn_fail_back";
 		}
-	
-	
-
+		model.addAttribute("updateCount", updateCount);
+		return "redirect:/orders?item_idx=" + item_idx;
+	}
 
 	// ------------재고 목록 조회(페이징처리같이)-------------------------------------------
 	@GetMapping(value = "/stock")
@@ -865,13 +868,10 @@ public class ManagerController {
 		return "manager/stock_detail";
 	}
 
-	
 	// ------------재고 수정(원본글 불러오기)----------------------------------------
-	
-	@GetMapping(value = "/stock_modify")
-	public String stock_modify(Model model, HttpSession session,
-			@RequestParam int item_idx) {
 
+	@GetMapping(value = "/stock_modify")
+	public String stock_modify(Model model, HttpSession session, @RequestParam int item_idx) {
 
 		ItemVO stock = service.getStock(item_idx);
 		System.out.println("번호:" + item_idx);
@@ -884,23 +884,22 @@ public class ManagerController {
 
 	// ========================= 재고 글 내용 수정 ===============================
 	@PostMapping(value = "stock_modifyPro.bo")
-		public String edit_stock( Model model,HttpSession session) {
-				
-			int updateCount = service.modifystock(item_idx);
+	public String edit_stock(Model model, HttpSession session) {
 
-			System.out.println(updateCount);
+		int updateCount = service.modifystock(item_idx);
 
-			if (updateCount == 0) {
-				model.addAttribute("msg", "재고 수정이 되지 않았습니다.<br>다시 시도해 주세요.");
-				return "manager/mn_fail_back";
-			}
+		System.out.println(updateCount);
+
+		if (updateCount == 0) {
+			model.addAttribute("msg", "재고 수정이 되지 않았습니다.<br>다시 시도해 주세요.");
+			return "manager/mn_fail_back";
+		}
 
 //			return "redirect:/stock?item_idx=" + item_idx;
-			return "redirect:/products?item_idx=" + item_idx;
+		return "redirect:/products?item_idx=" + item_idx;
 
-		}
-	
-	
+	}
+
 	// ------------ 문의 글 목록 불러오기(페이징,
 	// 검색기능추가)-------------------------------------------
 
@@ -909,7 +908,6 @@ public class ManagerController {
 			@RequestParam(defaultValue = "") String searchType, @RequestParam(defaultValue = "") String keyword) {
 
 		String id = (String) session.getAttribute("sId");
-		
 
 //			System.out.println(pageNum);
 
@@ -1362,12 +1360,10 @@ public class ManagerController {
 
 	}
 
-
-
 	// ------------정산 목록-------------------------------------------
 	@GetMapping(value = "sales_management")
 
-	public String sales_list (@RequestParam String manager_id, Model Model, HttpSession session) {
+	public String sales_list(@RequestParam String manager_id, Model Model, HttpSession session) {
 
 		String sId = (String) session.getAttribute("sId");
 
@@ -1376,30 +1372,29 @@ public class ManagerController {
 		ManagerVO orderTotal = service.getOrderTotal(sId);
 		// 한달매출
 		List<ManagerVO> salesMonth = service.getSalesMonth(sId);
-		
+
 		// 일주일매출
 		List<ManagerVO> salesWeek = service.getSalesWeek(sId);
-		
+
 		// 하루매출
 		List<ManagerVO> salesday = service.getSalesDay(sId);
-		
+
 		// 수수료
 		SellVO commission = service.getCommission(sId);
-		
+
 		// 순수익
 		System.out.println(sId);
-        SellVO  brand_net = service.getBrand_net(sId);
+		SellVO brand_net = service.getBrand_net(sId);
 //		Map<String, String> map = service.getBrand_net(sId);
 //		System.out.println(map);
-		
-        Model.addAttribute("orderTotal", orderTotal);
+
+		Model.addAttribute("orderTotal", orderTotal);
 		Model.addAttribute("salesTotal", salesTotal);
 		Model.addAttribute("salesMonth", salesMonth);
 		Model.addAttribute("salesWeek", salesWeek);
 		Model.addAttribute("salesday", salesday);
 		Model.addAttribute("commission", commission.getNet());
 		Model.addAttribute("Brand_net", brand_net.getBrand_net());
-
 
 		System.out.println("총매출: " + salesTotal);
 		System.out.println("한달매출: " + salesMonth);
@@ -1410,8 +1405,5 @@ public class ManagerController {
 
 		return "manager/sales_management";
 	}
-	
-	
-	
 
 }

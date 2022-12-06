@@ -5,7 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <link rel="icon" href="/Code_Green/resources/img/favicon.png">
-<title>패스워드 찾기 - 베지터틀</title>
+<title>가입 완료 - 베지터틀</title>
 <style type="text/css">
 #btn{
 	background-color: #2db400;
@@ -13,9 +13,12 @@
 	border: 1px solid #dadada;
 }
 .welcome{
-	width: 200px;
-	margin: auto;
-	padding: 40px
+	padding: 40px;
+	text-align: center;
+	padding: 40px; 
+	background-color: whitesmoke; 
+	margin-top: 100px; 
+	margin-bottom: 100px;
 }
 
 </style>
@@ -36,14 +39,12 @@
     <link rel="stylesheet" href="/Code_Green/resources/css/organic.css">
     <link rel="stylesheet" href="/Code_Green/resources/js/test.js">
 <body>
- 	<script type="text/javascript">
-//  	alert("${msg}");
- 	</script>
+ 	
  	<jsp:include page="../inc/top.jsp"></jsp:include>
 	
 	
 	<div class="welcome">	
-		<h4>전송 완료</h4>
+		<h4>환영합니다!</h4>
 		<input type="button" value="홈으로" onclick="location.href='./'" id="btn">
 		<input type="button" value="로그인" onclick="location.href='login'" id="btn">
 	</div>	

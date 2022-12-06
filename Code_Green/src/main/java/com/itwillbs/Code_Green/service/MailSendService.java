@@ -33,35 +33,6 @@ public class MailSendService {
 		authNumber = checkNum;
 	}
 
-	// 임시 패스워드 코드 생성기
-	public void makeRandomPass() {
-		// 난수의 범위 111111 ~ 999999 (6자리 난수)
-		
-		char[] codeTable = {
-				'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
-				'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 
-				'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 
-				'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
-				'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 
-				'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', 
-				'8', '9'
-			};
-
-			Random r = new Random();
-			code = "";
-			int codeLength = 20;
-			
-			// 원하는 코드 길이만큼 for문을 사용하여 반복문으로 처리
-			for(int i = 1; i <= codeLength; i++) {
-				// 배열 크기를 난수의 범위로 지정하여 난수 생성
-				int index = r.nextInt(codeTable.length);
-				// 생성된 난수를 배열 인덱스로 활용하여 1개의 코드 가져와서 문자열 결합
-				code += codeTable[index];
-			}
-			
-			System.out.println("임시 패스워드 : " + code);
-			
-	}
 
 	// 이메일 양식
 	public String joinEmail(String email) {
