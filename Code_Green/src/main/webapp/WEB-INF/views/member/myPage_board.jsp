@@ -75,7 +75,7 @@
 										        <tbody>  
 										            <tr class="item">  
 										                <td>${board.board_category }</td>  
-										                <td><a href="CommunityDetail.bo?board_idx=${board.board_idx }&pageNum=${pageInfo.pageNum}">${board.board_subject } (${board.reply_count })</a></td>  
+										                <td><a href="CommunityDetail.bo?board_idx=${board.board_idx }&pageNum=${pageInfo.pageNum}&board_id=${sessionScope.sId}">${board.board_subject } (${board.reply_count })</a></td>  
 										                <td width="12%">${board.board_readcount }</td>  
 										                 <fmt:parseDate var="dateString" value="${board.board_date}" pattern="yyyyMMdd" />
 		                                        		<td><fmt:formatDate value="${dateString }" type="date" pattern="yyyy.MM.dd" /></td>  

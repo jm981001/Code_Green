@@ -106,10 +106,12 @@ public class CommunityController {
 	@GetMapping(value = "/CommunityDetail.bo")
 	public String communityDetail(@RequestParam("board_idx") int board_idx,
 								 @RequestParam("board_id") String board_id, Model model, HttpSession session) {
-		String sId = (String) session.getAttribute("sId");
-
+		String sId = "";
+		if(session.getAttribute("sId")!=null) {
+			sId = (String) session.getAttribute("sId");
+		}
 		// 게시물 조회수 증가
-		if(!sId.equals(board_id)) {
+		if(!sId.equals(board_id) || sId.equals("")) {
 			service.increaseReadcount(board_idx);
 		}
 		BoardVO cBoard = service.getBoardDetail(board_idx);

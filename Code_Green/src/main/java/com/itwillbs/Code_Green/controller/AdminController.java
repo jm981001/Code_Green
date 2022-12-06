@@ -1298,7 +1298,17 @@ public class AdminController {
 	}
 	
 		
-		
+	// 회사소개	
+	@GetMapping(value = "/introduction")
+	public String our_web(){
+		return "inc/introduc";
+	}
+
+	// 팀원소개
+	@GetMapping(value = "/teamIntro")
+	public String our_team(){
+		return "inc/teamintro";
+	}
 		
 		
 		

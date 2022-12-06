@@ -560,7 +560,7 @@ public class MypageController {
 			model.addAttribute("msg", "글삭제에 실패했습니다.\n다시한번 시도해주세요");
 			return "member/fail_back";
 		} else {
-			return "redirect:/myPageQnaList.bo";
+			return "redirect:/myPageQnaList.my";
 		}
 	}
 	
