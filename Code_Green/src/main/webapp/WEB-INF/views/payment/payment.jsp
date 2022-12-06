@@ -46,59 +46,83 @@
 <script type="text/javascript" src="/Code_Green/resources/js/jquery-3.6.1.js"> </script>
 <script>
 	let coin_use;
+	let sell_total_price;
 
-	function coinUse() {
+	function coinUse() { // 적립금 사용
 		
 		let coin_total = ${coin.coin_total};
 		coin_use = $(".coin_use").val();
 		
 		let coin_remain = coin_total - coin_use;
 		
-		if(coin_remain >= 0){
+		// 적립금 잔여가 0보다 크거나 같고, 상품 전체금액(상품 개별 금액 * 배송비)보다 사용할 적립금이 작거나 같을 때
+		if(coin_remain >= 0 && coin_use <= (${map.sumM} + ${map.fee})) {
 			$(".coin_remain").html(coin_remain + "원");
 		 	$(".coin_use").html(coin_use + "원");
+		 	
+		 	sell_total_price = ${map.sumM} + ${map.fee} - coin_use;
+			$(".sell_total_price").html(sell_total_price + "원");
 		} else {
-			alert("사용할 적립금은 보유 적립금보다 적거나 같아야 합니다.");
+			alert("사용할 적립금은 보유 적립금보다 적거나 같아야 합니다.\n또는 주문 금액보다 사용할 적립금이 크면 안됩니다.");
 		} 
-		
-		let sell_total_price = ${map.sumM} + ${map.fee} - coin_use;
-		$(".sell_total_price").html(sell_total_price + "원");
 	}
 	
-	function orderGo() {
+	function orderGo() { // 주문하기
 		let result = confirm("주문하시겠습니까? 확인을 클릭하시면 주문 완료 및 결제 페이지로 이동합니다.")
 		
 		let member_idx = ${memberInfo.member_idx }
 		let item_total_price = ${map.sumM}
 	
 		if(result){
-			$.ajax({
-				type : "POST",
-				url : "payment_success",
-				data :{
-					member_idx : member_idx,
-					member_name : "${memberInfo.member_name }",
-					member_phone : "${memberInfo.member_phone }",
-					member_address : "${memberInfo.member_address }",
-					member_postcode : "${memberInfo.member_postcode }",
-					item_total_price : item_total_price,
-					shipping_fee : ${map.fee},
-					sell_usecoin : coin_use
-				},
-				success : function(data) {
-					alert("주문이 완료되었습니다.");
-					
-					location.href = "payment_success_cardPayForm?member_id=${sessionScope.sId}"; 
-				},
-				fail : function(data2) {
-					alert("주문이 실패되었습니다. 다시 시도해 주세요.");
-				}
-			}); 
+			if(sell_total_price > 0 || coin_use == null){ // 주문 금액이 0 이상일 때 or 사용한 적립금이 없을 때 주문완료 페이지로 이동(payment_success)
+				$.ajax({
+					type : "POST",
+					url : "payment_success",
+					data :{
+						member_idx : member_idx,
+						member_name : "${memberInfo.member_name }",
+						member_phone : "${memberInfo.member_phone }",
+						member_address : "${memberInfo.member_address }",
+						member_postcode : "${memberInfo.member_postcode }",
+						item_total_price : item_total_price,
+						shipping_fee : ${map.fee},
+						sell_usecoin : coin_use
+					},
+					success : function(data) {
+						alert("주문이 완료되었습니다.");
+						location.href = "payment_success_cardPayForm?member_id=${sessionScope.sId}"; 
+					},
+					fail : function(data2) {
+						alert("주문이 실패되었습니다. 다시 시도해 주세요.");
+					}
+				}); 
+			} else if(sell_total_price == 0){ // 적립금 사용하고 주문 금액이 0일때 결제완료 페이지로 이동(payment_success_card_thanks)
+				$.ajax({
+					type : "POST",
+					url : "payment_success",
+					data :{
+						member_idx : member_idx,
+						member_name : "${memberInfo.member_name }",
+						member_phone : "${memberInfo.member_phone }",
+						member_address : "${memberInfo.member_address }",
+						member_postcode : "${memberInfo.member_postcode }",
+						item_total_price : item_total_price,
+						shipping_fee : ${map.fee},
+						sell_usecoin : coin_use
+					},
+					success : function(data) {
+						alert("주문이 완료되었습니다.");
+						location.href = "payment_success_card_thanks?member_id=${sessionScope.sId}"; 
+					},
+					fail : function(data2) {
+						alert("주문이 실패되었습니다. 다시 시도해 주세요.");
+					}
+				}); 
+			} 
 		} else {
 			alert("주문이 실패 되었습니다. 다시 시도해 주세요.");
 		}
 	}	
-
 </script>
 </head>
 <body>

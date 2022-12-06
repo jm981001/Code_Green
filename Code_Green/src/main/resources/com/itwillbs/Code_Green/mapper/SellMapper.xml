@@ -39,21 +39,49 @@
 			VALUES(
 			 		 IFNULL(
 			 		 		(SELECT MAX(sell_idx) FROM sell s), 0
-			 		 		) + 1, 									  <!-- sell_idx -->
-			 		 #{member_idx}, 								  <!-- rf_member_idx -->
-			 		 #{sell_amount},								  <!-- sell_amount--> <!-- 장바구니에서 불러오기 -->
-			 		 #{sell_usecoin},							  <!-- sell_use_coin -->
-			 		 #{sell_total_price},							  <!-- sell_total_price -->
-			 		 '주문완료',									  <!-- sell_status --> <!-- 결제하고 나면 update 구문써서 바꿔주기 -->
-			 		 #{member_postcode},							  <!-- sell_postcode -->
-			 		 #{member_address},							  <!-- sell_address -->
-			 		 #{member_phone},							  <!-- sell_phone -->
-			 		 #{member_name},						      <!-- sell_receiver -->
-			 		 now(),											  <!-- sell_date --> <!-- now()로 넣으면 2022-11-04 18:27:00 형식으로 들어감 / DATE_FORMAT(now(), '%h:%i:%s') 사용하던지--> 
-			 		 '카드결제',							  <!-- sell_pay_type --> <!-- 주문시 디폴트로 무통장입금 걸어놓고 카드 결제 버튼 클릭시 update 구문써서 '카드결제' 바꿔주기 -->
-			 		 '결제대기중',									  <!-- sell_pay_status --> <!-- 카드 결제시 update 구문써서 바꿔주기 -->
-			 		 '',											  <!-- sell_pay_date --> <!-- 카드 결제시 update 구문써서 바꿔주기 -->
-			 		 CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD((SELECT IFNULL(MAX(CAST(SUBSTR(SELL_ORDER_NUMBER, 10) as unsigned)), 0) + 1 FROM sell s), 8, 0)), <!-- sell_order_number -->
+			 		 		) + 1, 									 
+			 		 #{member_idx}, 						
+			 		 #{sell_amount},						
+			 		 #{sell_usecoin},							
+			 		 #{sell_total_price},		
+						<choose>                                     
+							<when test="sell_total_price == 0"> <!-- 적립금 사용해서 주문금액 0일때 -->    
+							  '배송대기중',            
+							</when>                                        
+							<when test="!sell_total_price == 0">     
+							  '주문완료',   
+							</when>                                          
+						</choose>                                 
+			 		 #{member_postcode},						
+			 		 #{member_address},							  
+			 		 #{member_phone},							  
+			 		 #{member_name},						      
+			 		 now(),
+			 		 <choose>                                            
+							<when test="sell_total_price == 0"> <!-- 적립금 사용해서 주문금액 0일때 -->    
+							  '적립금사용',            
+							</when>                                        
+							<when test="!sell_total_price == 0">     
+							  '카드결제',   
+							</when>                                          
+						</choose>        											 
+						<choose>                                            
+							<when test="sell_total_price == 0"> <!-- 적립금 사용해서 주문금액 0일때 -->   
+							  '결제완료',            
+							</when>                                        
+							<when test="!sell_total_price == 0">     
+							  '결제대기중',   
+							</when>                                          
+						</choose>                                            
+						<choose>                                            
+							<when test="sell_total_price == 0"> <!-- 적립금 사용해서 주문금액 0일때 -->    
+							  now(),            
+							</when>                                        
+							<when test="!sell_total_price == 0">     
+							   '',   
+							</when>                                          
+						</choose>                                            
+			 		 CONCAT(DATE_FORMAT(NOW(), '%Y%m%d'), '-', LPAD((SELECT IFNULL(MAX(CAST(SUBSTR(SELL_ORDER_NUMBER, 10) as unsigned)), 0) + 1 FROM sell s), 8, 0)),
 			 		 ''
 			 	)			      
 	</insert>

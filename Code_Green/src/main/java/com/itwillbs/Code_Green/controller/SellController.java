@@ -95,12 +95,14 @@ public class SellController {
 								 @RequestParam(name = "shipping_fee", value = "shipping_fee", required = false, defaultValue = "1")  int shipping_fee,
 								 @RequestParam(name = "sell_usecoin", value = "sell_usecoin", required = false)  String sell_usecoin, Model model) {
 		
+		
 		String member_id = (String) session.getAttribute("sId");
 	
 		// 적립금 사용 관련
 		if(sell_usecoin == null) { // 주문시 적립금 사용 않을때
 			// 전체 금액 계산
 			int sell_total_price = item_total_price + shipping_fee - 0;
+			// sell sell_usecoin에 "0" 데이터 넣기 위함
 			sell_usecoin = "0";
 			
 			// 주문
@@ -116,13 +118,17 @@ public class SellController {
 			int sell_usecoin2 = Integer.parseInt(sell_usecoin);
 			int sell_total_price = item_total_price + shipping_fee - sell_usecoin2;
 			
-			// 주문
-			int insertCount = sell_service.insertOrder(member_id, member_idx, member_name, member_phone, member_address, member_postcode, sell_usecoin, sell_total_price);
+			if(sell_total_price == 0) { // 적립금 사용하고 총 주문금액이 0이라면
+				sell_total_price = 0;
+				int insertCount = sell_service.insertOrder(member_id, member_idx, member_name, member_phone, member_address, member_postcode, sell_usecoin, sell_total_price);
+			} else { // 적림금 사용하고 총 주문금액이 0 이상
+				int insertCount = sell_service.insertOrder(member_id, member_idx, member_name, member_phone, member_address, member_postcode, sell_usecoin, sell_total_price);
+			}
 			
 			// 주문시 사용한 적립금
 			int insertOrderUseCoinCount = coin_service.insert_order_useCoin(sell_usecoin, member_idx);
 			
-			// 주문시 결제 금액의 3% 적립
+			// 주문시 결제 금액의 3% 적립(적립금으로 다 사용할때는 3% 적립 안됨 - 주문금액 0이라서)
 			int insertOrderCoinAddCount = coin_service.insert_order_addCoin(sell_total_price, member_idx);
 		}
 		
