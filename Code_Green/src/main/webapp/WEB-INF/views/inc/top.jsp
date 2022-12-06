@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <script>
    function logout() {
       let result = confirm("로그아웃 하시겠습니까?");
@@ -10,6 +11,8 @@
       }
    }
 </script>
+
+
     <header class="header header--organic" data-sticky="true">
 	<div class="header__top">
 
@@ -50,9 +53,39 @@
 					<img src="http://itwillbs17.cdn1.cafe24.com/logoturtle.jpg" width="230" height="100">
 					</a>
 			</div>
-			<div class="header__right">
-				<div class="header__actions">
-					<a class="header__extra" href="myPageWishList.my?member_id=${sessionScope.sId }"><i class="icon-heart"></i></a>
+			
+<!-- 관리자,기업이면 마이페이지 장바구니 안보이게 -->
+			<c:choose>
+				<c:when test="${sessionScope.sId eq 'admin' || not empty sessionScope.sCode}">
+					<div class="header__right">
+					<div class="header__actions">
+						<a class="header__extra" href="myPageWishList.my?member_id=${sessionScope.sId }" style="visibility: hidden;"><i class="icon-heart"></i></a>
+						<div class="ps-cart--mini">
+							<a class="header__extra" href="cart?member_id=${sessionScope.sId }" style="visibility: hidden;"><i class="icon-bag2"></i> 
+								<c:choose>
+									<c:when test="${sessionScope.sId eq '' || sessionScope.sId eq null ||cartCount eq '' || cartCount eq null }"></c:when>
+										<c:otherwise>
+											<span id="cartCount"> 
+												<i>${cartCount }</i>
+											</span>
+										</c:otherwise>
+								</c:choose>
+							</a>
+						</div>
+						<c:if test="${not empty sessionScope.sId}">
+							<a class="header__extra" href="MemberInfo.me"><i class="icon-user" style="visibility: hidden;"></i></a>
+						</c:if>
+						<c:if test="${empty sessionScope.sId }">
+							<a class="header__extra" href="login"><i class="icon-user"></i></a>
+						</c:if>
+					</div>
+					</div>
+				</c:when>
+				
+				<c:otherwise>
+					<div class="header__right">
+					<div class="header__actions">
+						<a class="header__extra" href="myPageWishList.my?member_id=${sessionScope.sId }" ><i class="icon-heart"></i></a>
 					<div class="ps-cart--mini">
 						<a class="header__extra" href="cart?member_id=${sessionScope.sId }"><i class="icon-bag2"></i> 
 							<c:choose>
@@ -73,8 +106,20 @@
 						<a class="header__extra" href="login"><i class="icon-user"></i></a>
 					</c:if>
 
-				</div>
-			</div>
+					</div>
+					</div>
+				</c:otherwise>
+			</c:choose>
+			
+			
+
+			
+			
+			
+			
+			
+			
+			
 		</div>
 	</div>
 
@@ -112,4 +157,4 @@
             </div>
         </nav>
     </header>
-    
+  
