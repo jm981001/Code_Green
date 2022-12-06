@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.CoinMapper">
+
+	<!-- ================= 마이페이지 ================ -->
+
+	<!-- 적립금 목록 -->
+	<select id="selectCoinList" resultType="com.itwillbs.Code_Green.vo.CoinVO">
+		 SELECT c.coin_idx
+        	   , c.COIN_ADD
+        	   , c.COIN_CONTENT
+         	   , c.COIN_USE
+         	   , c.COIN_CHARGE
+         	   , c.COIN_TOTAL
+         	   , c.COIN_DATE
+               , m.MEMBER_ID
+			 FROM coin c
+				left join member m
+					on c.RF_MEMBER_IDX = m.MEMBER_IDX
+			 WHERE 
+			 	  m.MEMBER_ID = #{member_id}  
+			 ORDER BY c.coin_idx desc LIMIT #{startRow}, #{listLimit}
+	</select>
+   
+
+	<!-- 적립금 목록 갯수 -->
+	<select id="selectCoinListCount" resultType="integer">
+		SELECT 
+				COUNT(*) 
+				FROM coin
+				WHERE
+					rf_member_idx =(select member_idx from member where member_id = #{member_id})
+	</select>
+
+	<!-- 적립금 목록 -->
+   <select id="selectTotalCoin" resultType="com.itwillbs.Code_Green.vo.CoinVO">
+            SELECT c.coin_idx
+         	   , c.COIN_TOTAL as total
+			 FROM coin c
+				left join member m
+					on c.RF_MEMBER_IDX = m.MEMBER_IDX
+			 WHERE 
+			 	  m.MEMBER_ID = #{member_id}
+		     order by coin_idx desc limit 1;
+	</select>
+	
+	
+	
+	<!-- ================= 주문 ================== -->
+	
+	<!-- 주문시 적립금 불러오기 -->
+	<select id="selectCoin" resultType="com.itwillbs.Code_Green.vo.CoinVO">
+		SELECT  
+				c.coin_idx,
+				c.rf_member_idx,
+		        c.coin_add,
+		        c.coin_use,
+		        c.coin_charge,
+		        c.coin_total,
+		        c.coin_date
+		  FROM  
+		  		coin c
+		  JOIN 
+		  		member m ON c.rf_member_idx = m.member_idx
+		 WHERE 
+		 		m.member_id = #{member_id}
+	  ORDER BY 
+	  			c.coin_idx DESC limit 1
+	</select>
+
+	<!-- 주문시 적립금 사용 -->
+	<insert id="insert_order_useCoin">
+		<selectKey keyProperty="coin_total" order="BEFORE" resultType="string">
+			SELECT 
+					coin_total
+			  FROM
+			  		coin
+			 WHERE 
+			 		rf_member_idx = #{member_idx}
+		  ORDER BY
+		  			coin_idx DESC
+		  	 LIMIT
+		  	 		1		   		
+		</selectKey>
+		INSERT INTO
+					 coin
+			 VALUES(
+			 		 IFNULL(
+			 		 		(SELECT MAX(coin_idx) FROM coin c), 0
+			 		 		) + 1, 
+			 		 #{member_idx},
+			 		 '주문결제시 사용',
+			 		 '0',
+			 		 #{sell_usecoin},
+			 		 '0',
+			 		 #{coin_total} - #{sell_usecoin},
+			 		 DATE_FORMAT(now(),'%Y%m%d')
+			 )
+	</insert>
+
+	<!-- 주문시 적립금 3% 적립  -->
+	<insert id="insert_order_addCoin">
+		<selectKey keyProperty="coin_total" order="BEFORE" resultType="string">
+				SELECT 
+						 coin_total
+				  FROM
+				  		 coin
+				 WHERE 
+				 		 rf_member_idx = #{member_idx}
+			  ORDER BY
+			  			 coin_idx DESC
+			  	 LIMIT
+			  	 		 1		   		
+			</selectKey>
+			INSERT INTO
+						 coin
+				 VALUES(
+				 		 IFNULL(
+				 		 		(SELECT MAX(coin_idx) FROM coin c), 0
+				 		 		) + 1, 
+				 		 #{member_idx},
+				 		 '주문결제시 결제금액의 3% 적립',
+				 		 ROUND(#{sell_total_price} * 0.03),
+				 		 '0',
+				 		 '0',
+				 		 ROUND(#{coin_total} + (#{sell_total_price} * 0.03)),
+				 		 DATE_FORMAT(now(),'%Y%m%d')
+				 )
+	
+	</insert>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

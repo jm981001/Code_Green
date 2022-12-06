@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.QnaMapper">
+
+	<!-- 상품 문의 상세 정보 조회 -->
+	<select id="selectQna1" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+		SELECT * 
+			FROM qna
+			WHERE
+				qna_idx = #{qna_idx}
+	</select>
+	
+	
+	<!-- 상품 문의 작성  -->
+	<insert id="insertQna">
+		<selectKey keyProperty="qna_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(qna_idx) FROM qna
+		</selectKey>
+		INSERT 
+			INTO qna
+			VALUES (
+					#{qna_idx}+ 1,   
+					#{item_idx}, 
+					"상품문의", 
+					"답변대기", 
+					"N", 
+					#{qna_id}, 
+					#{qna_pass}, 
+					#{qna_subject}, 
+					#{qna_content}, 
+					"N",
+					"0",   
+					date_format(now(),'%Y%m%d')
+					)
+	</insert>
+
+
+	<!-- 상품 문의 삭제 -->
+	<delete id="deleteQna">
+		DELETE
+			FROM qna
+			WHERE 
+				qna_idx = #{qna_idx}
+	</delete>
+	
+	
+	<!-- 상품 문의 수정 -->
+	<update id="updateQna">
+		UPDATE qna
+			SET
+				qna_subject = #{qna_subject},
+				qna_content = #{qna_content},
+				qna_pass = #{qna_pass}
+			WHERE
+				qna_idx = #{qna_idx}
+	</update>
+	
+	
+	
+	
+	
+	
+	
+	<!-- 1:1 문의 목록출력 - 첫메인 , 답변대기, 답변완료 별 -->
+	<select id="selectMantomanList" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+		SELECT *
+			FROM qna
+			WHERE qna_type='1:1문의' 
+			AND   qna_id = #{qna_id}
+				<if test="!qna_status.equals('')">
+					AND qna_status = #{qna_status}
+				</if>
+			ORDER BY qna_date DESC, qna_idx DESC
+			LIMIT #{startRow}, #{listLimit}
+	</select>
+
+
+	<!-- 1:1문의 갯수카운트 - 첫메인 , 답변대기, 답변완료 별 갯수카운트 -->
+	<select id="selectMantomanListCount" resultType="integer">
+		SELECT count(*)
+			FROM qna
+			WHERE qna_type = '1:1문의'
+			AND   qna_id = #{qna_id}
+				<if test="!qna_status.equals('')">
+					AND qna_status = #{qna_status}
+				</if>
+	</select>
+	
+
+
+	<!-- 1:1 문의글 작성 -->
+	<insert id="insertMtmQna">
+	<selectKey keyProperty="qna_idx" resultType="integer" order="BEFORE">
+		SELECT MAX(qna_idx) FROM qna
+		</selectKey>
+		INSERT 
+			INTO qna
+			VALUES (
+					#{qna_idx}+ 1,   
+					0, 
+					"1:1문의", 
+					#{qna_category}, 
+					"N", 
+					#{qna_id}, 
+					"N", 
+					#{qna_subject}, 
+					#{qna_content}, 
+					"답변대기",
+					"0",   
+					date_format(now(),'%Y%m%d')
+					)
+	</insert>
+
+	<!-- 1:1 문의글 내용가져오기 -->
+	<select id="selectMtmDetail" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+		SELECT * 
+			FROM qna
+			WHERE 
+				qna_idx = #{qna_idx}
+				AND
+				qna_type = "1:1문의"
+	</select>
+	
+	<!-- 1:1 문의글 내용삭제 -->
+	<delete id="deleteMtm">
+		DELETE FROM qna
+			WHERE 
+				qna_type = "1:1문의"
+				AND
+				qna_idx = #{qna_idx}
+	</delete>
+	
+</mapper>

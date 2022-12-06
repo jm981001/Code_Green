@@ -1,0 +1,1004 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.ItemMapper">
+
+	<!-- 상품 목록 조회 -->
+	<select id="selectItemList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+				FROM (select *
+						from item
+						order by item_idx  desc
+						limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+             order by i.item_idx desc 
+	</select>
+	
+	<!-- 신상품리스트 판매순 -->
+	<select id="selectItemList_sales" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+                   ifnull(s.count,0)
+				FROM (select i.*
+						from item i 
+                        left join manager m
+                        on i.re_manager_idx = m.manager_idx
+                        where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						order by i.item_idx  desc
+						limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+				LEFT JOIN (select RF_ITEM_IDX,  count(*) as count from sell_detail
+							group by RF_ITEM_IDX) s
+					ON s.RF_ITEM_IDX = i.item_idx
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			ORDER BY s.count desc ,i.item_idx desc
+	</select>
+
+	<!-- 신상품리스트 가격 낮은순 -->
+	<select id="selectItemList_cheap" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+				FROM (select i.*
+						from item i 
+                        left join manager m
+                        on i.re_manager_idx = m.manager_idx
+                        where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						order by i.item_idx  desc
+						limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			ORDER BY CAST(i.item_price AS UNSIGNED)  asc
+	</select>
+	
+		<!-- 신상품리스트 가격 높은순 -->
+	<select id="selectItemList_ex" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+				FROM (select i.*
+						from item i 
+                        left join manager m
+                        on i.re_manager_idx = m.manager_idx
+                        where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						order by i.item_idx  desc
+						limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			ORDER BY CAST(i.item_price AS UNSIGNED)  desc
+	</select>
+	
+	<!-- 베스트리스트-->
+	<select id="selectItemBestList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price,
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+				   ifnull((select count(*) 
+						from heart 
+						where rf_item_idx =  i.item_idx),0) as count
+				FROM (select i.item_idx,
+							 i.RE_MANAGER_IDX,
+						     i.item_name,
+						     i.item_info,
+						     i.item_packing, 
+						     i.item_category, 
+						     i.item_price,
+						     i.item_sale, 
+						     i.item_stock, 
+						     i.item_status,  
+						     i.item_readcount,  
+						     i.item_date, 
+							 count(*) as count
+								 from item  i 
+								 	 left join heart h 
+										 on i.ITEM_IDX = h.RF_ITEM_IDX
+									 left join manager m
+										on i.re_manager_idx = m.manager_idx
+									where i.item_stock not in ("0")
+									and m.MANAGER_DEL_YN not in ("Y")
+								 group by i.ITEM_IDX
+								 order by count desc
+								 limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			 ORDER BY count desc
+	</select>
+	
+<!-- 베스트리스트_판매순 -->
+	<select id="selectItemBestList_slaes" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price,
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+                   ifnull( s.sell_count,0) as sell_count
+				FROM (select i.item_idx,
+							 i.RE_MANAGER_IDX,
+						     i.item_name,
+						     i.item_info,
+						     i.item_packing, 
+						     i.item_category, 
+						     i.item_price,
+						     i.item_sale, 
+						     i.item_stock, 
+						     i.item_status,  
+						     i.item_readcount,  
+						     i.item_date, 
+							 count(*) as count
+						 from item  i 
+						 	 left join heart h 
+								 on i.ITEM_IDX = h.RF_ITEM_IDX
+							 left join manager m
+								on i.re_manager_idx = m.manager_idx
+							where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						 group by i.ITEM_IDX
+						 order by count desc
+						 limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+				LEFT JOIN (select RF_ITEM_IDX,  count(*) as sell_count from sell_detail
+							group by RF_ITEM_IDX) s
+					ON s.RF_ITEM_IDX = i.item_idx
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			 ORDER BY s.sell_count desc
+	</select>
+
+
+<!-- 베스트리스트_가격 낮은순 -->
+	<select id="selectItemBestList_cheap" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price,
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+				FROM (select i.item_idx,
+							 i.RE_MANAGER_IDX,
+						     i.item_name,
+						     i.item_info,
+						     i.item_packing, 
+						     i.item_category, 
+						     i.item_price,
+						     i.item_sale, 
+						     i.item_stock, 
+						     i.item_status,  
+						     i.item_readcount,  
+						     i.item_date, 
+							 count(*) as count
+						 from item  i 
+						 	 left join heart h 
+								 on i.ITEM_IDX = h.RF_ITEM_IDX
+							 left join manager m
+								on i.re_manager_idx = m.manager_idx
+							where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						 group by i.ITEM_IDX
+						 order by count desc
+						 limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			 ORDER BY CAST(i.item_price AS UNSIGNED) asc
+	</select>
+	
+<!-- 베스트리스트_가격 높은순 -->
+	<select id="selectItemBestList_ex" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price,
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+				FROM (select i.item_idx,
+							 i.RE_MANAGER_IDX,
+						     i.item_name,
+						     i.item_info,
+						     i.item_packing, 
+						     i.item_category, 
+						     i.item_price,
+						     i.item_sale, 
+						     i.item_stock, 
+						     i.item_status,  
+						     i.item_readcount,  
+						     i.item_date, 
+							 count(*) as count
+						 from item  i 
+						 	 left join heart h 
+								 on i.ITEM_IDX = h.RF_ITEM_IDX
+							 left join manager m
+								on i.re_manager_idx = m.manager_idx
+							where i.item_stock not in ("0")
+							and m.MANAGER_DEL_YN not in ("Y")
+						 group by i.ITEM_IDX
+						 order by count desc
+						 limit 24) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+			 WHERE f.file1 NOT LIKE '%상세%'
+			 	and i.item_stock not in ("0")
+                and m.MANAGER_DEL_YN not in ("Y")
+			 ORDER BY CAST(i.item_price AS UNSIGNED) desc
+	</select>
+
+
+	<!-- 상품 조회수 증가 -->
+	<update id="updateReadcount">
+		UPDATE item
+			SET
+				item_readcount = item_readcount + 1
+			WHERE
+				item_idx = #{item_idx}
+	</update>
+
+	<!-- 상품 상세 정보 조회 -->
+	<select id="selectItem" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+ 		select  i.item_idx, 
+				i.re_manager_idx,
+				i.item_name,
+				i.item_info,
+				i.item_packing, 
+				i.item_category, 
+				i.item_price,
+				i.item_sale, 
+				i.item_stock, 
+				i.item_status,  
+				i.item_readcount,  
+				i.item_date, 
+				f.file1,
+				f.file2,
+				m.manager_brandname,
+				ifnull(a.count,0) as count,
+                ifnull(truncate( b.board_star_score,1),0) AS board_star_score,
+                ifnull(round(truncate( b.board_star_score,1),0),0) AS score,
+			    ifnull((select round(count(*) * 100.0 / (select count(*)
+												from board_star s 
+													left join board b 
+														on s.rf_board_idx = b.BOARD_IDX
+												where b.BOARD_ITEM_IDX=#{item_idx}),0) as percent
+					from board_star s 
+						left join board b 
+							on s.rf_board_idx = b.BOARD_IDX
+					where b.BOARD_ITEM_IDX=#{item_idx}
+					group by board_star_score
+					having  s.board_star_score=1),0) as star1,
+			 ifnull((select round(count(*) * 100.0 / (select count(*)
+												from board_star s 
+													left join board b 
+														on s.rf_board_idx = b.BOARD_IDX
+												where b.BOARD_ITEM_IDX=#{item_idx}),0) as percent
+					from board_star s   
+						left join board b 
+							on s.rf_board_idx = b.BOARD_IDX
+					where b.BOARD_ITEM_IDX=#{item_idx}
+					group by board_star_score
+					having  s.board_star_score=2),0) as star2,
+			 ifnull((select round(count(*) * 100.0 / (select count(*)
+												from board_star s 
+													left join board b 
+														on s.rf_board_idx = b.BOARD_IDX
+												where b.BOARD_ITEM_IDX=#{item_idx}),0) as percent
+					from board_star s 
+						left join board b  
+							on s.rf_board_idx = b.BOARD_IDX
+					where b.BOARD_ITEM_IDX=#{item_idx}
+					group by board_star_score
+					having  s.board_star_score=3),0) as star3,
+			 ifnull((select round(count(*) * 100.0 / (select count(*)
+												from board_star s 
+													left join board b 
+														on s.rf_board_idx = b.BOARD_IDX
+												where b.BOARD_ITEM_IDX=#{item_idx}),0) as percent
+					from board_star s 
+						left join board b 
+							on s.rf_board_idx = b.BOARD_IDX
+					where b.BOARD_ITEM_IDX=#{item_idx}
+					group by board_star_score
+					having  s.board_star_score=4),0) as star4,
+			 ifnull((select round(count(*) * 100.0 / (select count(*)
+												from board_star s 
+													left join board b 
+														on s.rf_board_idx = b.BOARD_IDX
+												where b.BOARD_ITEM_IDX=#{item_idx}),0) as percent
+					from board_star s 
+						left join board b 
+							on s.rf_board_idx = b.BOARD_IDX
+					where b.BOARD_ITEM_IDX=#{item_idx}
+					group by board_star_score
+					having  s.board_star_score=5),0) as star5,
+			ifnull((select count(*) from heart
+				where rf_item_idx = #{item_idx}
+                group by rf_item_idx),0)as heart
+		 FROM item i 
+			LEFT JOIN file_item f 
+				ON i.item_idx = f.rf_item_idx 
+			LEFT JOIN manager m 
+				ON i.re_manager_idx =  m.manager_idx
+			 LEFT JOIN (SELECT board_item_idx
+							 , count(*) as count 
+						FROM   board
+						WHERE  board_item_idx = #{item_idx}) a 
+				on i.ITEM_IDX= a.board_item_idx
+            	 LEFT JOIN (SELECT 	b.board_item_idx
+				    			 	, avg(s.board_star_score) as board_star_score
+			  					FROM board b join board_star s on b.board_idx = s.rf_board_idx
+                        		WHERE  b.board_item_idx= #{item_idx}
+			 					GROUP BY b.board_item_idx) b 
+             		ON i.item_idx = a.board_item_idx 
+		 WHERE f.file1 NOT LIKE '%상세%'
+		   and i.item_idx = #{item_idx}
+		 ORDER BY
+			i.item_idx DESC;
+	</select>
+	
+	
+	<!-- 상품 후기 -->
+   <select id="selectReview" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+           SELECT  
+		  		b.BOARD_IDX,
+                b.BOARD_SUBJECT,
+                b.BOARD_CONTENT,
+                b.BOARD_ID,
+                b.BOARD_DATE,
+                f.FILE1,
+                f.FILE2,
+                ifnull(s.board_star_score,0) as board_star_score,
+                ifnull( v.count,0)as best_count
+			FROM board b left join file_board f 
+                    on b.BOARD_IDX = f.RF_BOARD_IDX	
+               left join member m 
+					on b.board_id = m.member_id
+			   left join board_star s
+			   	  on b.BOARD_IDX = s.RF_BOARD_IDX
+			   left join (select  RF_BOARD_IDX,count(*) as count
+			                from board_best
+			                group by RF_BOARD_IDX) v 
+                  on b.board_idx = v.RF_BOARD_IDX
+            WHERE  board_item_idx = #{item_idx}
+            	and m.member_del_yn = "N"
+			ORDER BY b.board_date  desc ,b.board_idx  desc
+			LIMIT #{startRow}, #{listLimit}  
+   </select>
+	
+<!-- 	상품 후기 별점높은순 -->
+	 <select id="selectGoodList" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+              SELECT  
+		  		b.BOARD_IDX,
+                b.BOARD_SUBJECT,
+                b.BOARD_CONTENT,
+                b.BOARD_ID,
+                b.BOARD_DATE,
+                f.FILE1,
+                f.FILE2,
+                ifnull(s.board_star_score,0) as board_star_score,
+                ifnull( v.count,0)as best_count
+			FROM board b left join file_board f 
+             	  on b.BOARD_IDX = f.RF_BOARD_IDX
+			   left join board_star s
+			   	  on b.BOARD_IDX = s.RF_BOARD_IDX
+   			   left join (select  RF_BOARD_IDX,count(*) as count
+			                from board_best
+			                group by RF_BOARD_IDX) v 
+                  on b.board_idx = v.RF_BOARD_IDX
+               left join member m 
+					on b.board_id = m.member_id
+            WHERE  board_item_idx = #{item_idx}
+            	and m.member_del_yn = "N"
+			ORDER BY s.board_star_score  desc ,b.board_idx  desc
+			LIMIT #{startRow}, #{listLimit}   
+   </select>
+	
+	
+	<!-- 	상품 후기 추천 많은순 -->
+	 <select id="selectBestList" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+              SELECT  
+		  		b.BOARD_IDX,
+                b.BOARD_SUBJECT,
+                b.BOARD_CONTENT,
+                b.BOARD_ID,
+                b.BOARD_DATE,
+                f.FILE1,
+                f.FILE2,
+                ifnull(s.board_star_score,0) as board_star_score,
+                ifnull( v.count,0)as best_count
+			FROM board b left join file_board f 
+                    on b.BOARD_IDX = f.RF_BOARD_IDX
+			   left join board_star s 
+			    	on b.BOARD_IDX = s.RF_BOARD_IDX
+   			   left join (select  RF_BOARD_IDX,count(*) as count
+			                from board_best
+			                group by RF_BOARD_IDX) v 
+                    on b.board_idx = v.RF_BOARD_IDX			   	
+               left join member m 
+					on b.board_id = m.member_id
+            WHERE  board_item_idx = #{item_idx}
+            	and m.member_del_yn = "N"
+			ORDER BY best_count  desc
+			LIMIT #{startRow}, #{listLimit}   
+   </select>
+   
+   
+   <!-- 	상품 후기 별점낮은순 -->
+	 <select id="selectWorstList" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+              SELECT  
+		  		b.BOARD_IDX,
+                b.BOARD_SUBJECT,
+                b.BOARD_CONTENT,
+                b.BOARD_ID,
+                b.BOARD_DATE,
+                f.FILE1,
+                f.FILE2,
+                ifnull(s.board_star_score,0) as board_star_score,
+                ifnull( v.count,0)as best_count
+			FROM board b left join file_board f 
+               on b.BOARD_IDX = f.RF_BOARD_IDX
+			   left join board_star s on b.BOARD_IDX = s.RF_BOARD_IDX
+   			   left join (select  RF_BOARD_IDX,count(*) as count
+			                from board_best
+			                group by RF_BOARD_IDX) v 
+                    on b.board_idx = v.RF_BOARD_IDX					   
+               left join member m 
+					on b.board_id = m.member_id
+            WHERE  board_item_idx = #{item_idx}
+            	and m.member_del_yn = "N"
+			ORDER BY s.board_star_score  ASC ,b.board_idx  desc
+			LIMIT #{startRow}, #{listLimit}     
+   </select>
+	
+	
+	<!-- 상품 후기 갯수-->
+	<select id="selectReviewListCount" resultType="integer">
+             SELECT 
+				COUNT(*) 
+				FROM board b
+			   left join member m 
+					on b.board_id = m.member_id
+				WHERE
+					board_item_idx =  #{item_idx}
+					and m.member_del_yn = "N"
+	</select>
+	
+<!-- 	상품 문의 갯수 조회 -->
+	<select id="selectQnaListCount" resultType="integer">
+		SELECT  COUNT(*) 
+				FROM qna q			   
+					left join member m 
+					on q.qna_id = m.member_id
+				WHERE
+					q.qna_item_idx = #{item_idx}
+                     and m.member_del_yn = "N"
+	</select>
+	
+	<!-- 전체 상품 갯수 조회(검색 기능 추가 아직) -->
+	<select id="selectItemListCount" resultType="integer">
+		SELECT 
+			COUNT(*) 
+			FROM item
+	</select>
+	
+	
+	<!-- 베스트리스트 갯수 -->
+	<select id="selectItemBestListCount" resultType="integer">
+		SELECT 
+			COUNT(*) 
+			FROM item
+	</select>
+
+	
+	<!-- 상세페이지안 관련상품 6개 -->
+	<select id="selectItemList6" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		select i.item_idx, 
+			   i.re_manager_idx,
+			   i.item_name,
+			   i.item_price,
+			   i.item_sale, 
+			   i.item_category,
+			   f.file1,
+			   m.manager_brandname,
+			   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+			from item i 
+				LEFT JOIN file_item f
+					ON i.item_idx = f.rf_item_idx
+				LEFT JOIN manager m 
+					ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 				
+			WHERE i.item_category = #{i.item_category}
+			ORDER BY
+				rand()  LIMIT 6
+	</select>
+	
+	
+	  
+	
+<!-- 	상품 문의 리스트 -->
+	<select id="selectQna" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+              SELECT     q.QNA_IDX
+						,q.QNA_ITEM_IDX
+						,q.QNA_TYPE
+						,q.QNA_CATEGORY
+						,q.QNA_ANSWER
+						,q.QNA_ID
+						,q.QNA_PASS
+						,q.QNA_SUBJECT
+						,q.QNA_CONTENT
+						,q.QNA_STATUS
+						,q.QNA_READCOUNT
+						,q.QNA_DATE
+						,m.manager_id
+				FROM qna q 
+					left join item i 
+						on q.qna_item_idx = i.item_idx
+                    left join manager m 
+						on m.manager_idx = i.re_manager_idx
+					left join member me 
+					on q.qna_id = me.member_id
+				WHERE
+					q.qna_item_idx =  #{item_idx}
+                   and me.member_del_yn = "N"
+				ORDER BY q.qna_idx DESC
+				LIMIT #{Qna_startRow}, #{Qna_listLimit}   
+	</select>
+	
+	
+	
+	
+		<!--상세상세페이지 같은 브랜드상품 2개 -->
+	<select id="selectSameBrand" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT i.item_idx, 
+			   i.re_manager_idx,
+			   i.item_name,
+			   i.item_price,
+			   i.item_sale, 
+			   i.item_category,
+			   f.file1,
+			   m.manager_brandname,
+			   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+			FROM item i
+				LEFT JOIN  file_item f
+					ON i.item_idx = f.rf_item_idx
+				LEFT JOIN manager m 
+					ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 					
+			WHERE  m.manager_brandname = #{ m.manager_brandname}
+			ORDER BY
+				rand()  LIMIT 2  
+	</select>
+	
+	
+<!-- 	마이페이지 찜한 상품 리스트 -->
+	<select id="wishList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT i.item_name
+			 , i.item_price
+			 , f.file1
+			 , i.item_idx
+			 , i.item_category
+			 , h.heart_idx
+			 , a.manager_brandname
+			 , m.member_idx
+	 		FROM heart h 
+	 			LEFT JOIN item i 
+					ON h.rf_item_idx = i.item_idx
+	    		LEFT JOIN member m
+	    			ON h.rf_member_idx = m.member_idx
+	  		    LEFT JOIN file_item f
+					ON i.item_idx = f.file_item_idx
+				LEFT JOIN manager a 
+					ON i.re_manager_idx =  a.manager_idx
+			 WHERE m.member_id = #{member_id}
+			 order by h.heart_date desc, h.heart_idx desc LIMIT #{startRow}, #{listLimit};
+	</select>
+	
+	
+<!-- 	마이페이지 찜한 상품 갯수-->
+	<select id="selectWishListCount" resultType="integer">
+		SELECT count(*)
+			 FROM heart h
+			    LEFT JOIN member m
+			    ON h.rf_member_idx = m.member_idx
+			 WHERE m.member_id = #{member_id}
+	</select>
+	
+	<!-- 	작성 가능 후기 갯수-->
+	<select id="getReviewListCount" resultType="integer">
+			SELECT count(*)
+			 FROM sell_detail d
+                LEFT JOIN sell s
+					on d.RF_SELL_IDX = s.SELL_IDX
+			    LEFT JOIN member m
+					on s.RF_MEMBER_IDX = m.MEMBER_IDX
+			 WHERE m.member_id =#{member_id}
+					and d.SELL_REVIEW_STATUS = "N"
+					and s.SELL_PAY_STATUS ="결제완료"
+	</select>	
+	
+<!-- 	마이페이지 찜한상품 삭제 -->
+	<delete id="deleteWish">
+        DELETE FROM heart
+			WHERE heart_idx = #{heart_idx}
+				AND rf_member_idx=${member_idx};
+	</delete>
+	
+<!-- 	새롭게 만나는 상품들 -->
+		<select id="mainList1" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull(truncate( a.board_star_score,1) ,0)AS board_star_score,
+                   ifnull(s.count,0) as count, 
+                   ifnull(b.review,0) as review
+				FROM (select *
+						from item
+						order by item_idx  desc
+						limit 30) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+				LEFT JOIN (select RF_ITEM_IDX,  count(*) as count from sell_detail
+							group by RF_ITEM_IDX) s
+					ON s.RF_ITEM_IDX = i.item_idx 
+			   LEFT JOIN  (select *, count(*) as review 
+                        from board b 
+                           left join item i 
+                              on b.board_item_idx = i.item_idx
+                              group by b.board_item_idx) b
+                   ON b.board_item_idx = i.item_idx
+
+			ORDER BY rand()  LIMIT 7
+	</select>
+	
+	
+	<!-- 	고객님들의 혼자알기 아까운 상품들 -->
+		<select id="mainList2" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull(truncate( a.board_star_score,1) ,0)AS board_star_score,
+                   ifnull(s.count,0) as count, 
+                   ifnull(b.review,0) as review
+				FROM (select *, count(*) as review 
+                        from board b 
+                           left join item i 
+                              on b.board_item_idx = i.item_idx
+							group by b.board_item_idx
+						limit 30) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+				LEFT JOIN (select RF_ITEM_IDX,  count(*) as count from sell_detail
+							group by RF_ITEM_IDX) s
+					ON s.RF_ITEM_IDX = i.item_idx 
+			   LEFT JOIN  (select *, count(*) as review 
+                        from board b 
+                           left join item i 
+                              on b.board_item_idx = i.item_idx
+                              group by b.board_item_idx) b
+                   ON b.board_item_idx = i.item_idx
+			ORDER BY rand()  LIMIT 7
+	</select>
+	
+	
+	
+	
+	<!-- 	내 취향을 잘 아는 상품들 -->
+		<select id="mainList3" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+    	 select    i.item_idx, 
+				   i.re_manager_idx,
+				   i.item_name,
+				   i.item_info,
+				   i.item_packing, 
+				   i.item_category, 
+				   i.item_price, 
+				   i.item_sale, 
+				   i.item_stock, 
+				   i.item_status,  
+				   i.item_readcount,  
+				   i.item_date, 
+				   f.file1,
+				   m.manager_brandname,
+				   ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
+				   ifnull(truncate( a.board_star_score,1) ,0)AS board_star_score,
+                   ifnull(s.count,0) as count
+				FROM (select *, count(*) as heart 
+                        from heart h 
+                           left join item i 
+                              on h.RF_ITEM_IDX = i.item_idx
+							group by h.RF_ITEM_IDX
+                            order by heart desc
+                            limit 30) i 
+            	LEFT JOIN file_item f 
+              		ON i.item_idx = f.rf_item_idx 
+			 	JOIN manager m 
+               		ON i.re_manager_idx =  m.manager_idx
+            	LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+							    , avg(s.board_star_score) as board_star_score
+						  	FROM board b join board_star s on b.board_idx = s.rf_board_idx
+						 	group by b.BOARD_ITEM_IDX) a 
+                	ON i.item_idx = a.BOARD_ITEM_IDX 
+				LEFT JOIN (select RF_ITEM_IDX,  count(*) as count from sell_detail
+							group by RF_ITEM_IDX) s
+					ON s.RF_ITEM_IDX = i.item_idx 
+			ORDER BY rand()  LIMIT 7
+	</select>
+	
+<!-- 	상품구매 유무 (리뷰 버튼) -->
+	<select id="reviewBtn" resultType="integer">
+	select count(*) 
+		from sell_detail d
+			left join sell s 
+				on d.RF_SELL_IDX = s.SELL_IDX
+	            
+		where d.RF_ITEM_IDX=${item_idx} 
+			and s.RF_MEMBER_IDX=${sIdx}
+			and d.SELL_REVIEW_STATUS='N'  
+			and s.SELL_PAY_STATUS ="결제완료"
+	</select> 
+	
+	<!-- 주문시 재고 차감 -->
+	<update id="updateItemNumber">
+		<selectKey keyProperty="item_stock" resultType="string" order="BEFORE">
+			SELECT
+					item_stock
+			  FROM
+			  		item
+			 WHERE
+			 		item_idx = #{item_idx2} 		
+		</selectKey>
+			UPDATE
+					item
+			   SET
+			   		item_stock = #{item_stock} - #{sell_amount2}
+			 WHERE
+			 		item_idx = #{item_idx2}   		 
+	</update>
+	
+		<!-- 주문시 재고 차감 -->
+	<update id="updateItemNumber2">
+		<selectKey keyProperty="item_stock" resultType="string" order="BEFORE">
+			SELECT
+					item_stock
+			  FROM
+			  		item
+			 WHERE
+			 		item_idx = #{item_idx2} 		
+		</selectKey>
+			UPDATE
+					item
+			   SET
+			   		item_stock = #{item_stock} + #{sell_amount2}
+			 WHERE
+			 		item_idx = #{item_idx2}   		 
+	</update>
+	
+	
+	<select id="checkWish1" resultType="integer">
+	SELECT case when count(*) = 0 then 2 
+		    else 1 end as checkWish1
+	FROM heart
+	WHERE RF_ITEM_IDX = #{item_idx}
+		  and RF_MEMBER_IDX = #{sIdx}
+
+	</select>
+</mapper>

@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.MemberMapper">
+
+	<!-- 가입 -->
+	<insert id="insertMember">
+		<selectKey keyProperty="member_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(member_idx) FROM member
+		</selectKey>
+		INSERT INTO member
+		VALUES (
+				#{member_idx} + 1, 
+				#{member_id},		<!-- 	MEMBER_ID VARCHAR(16) UNIQUE NOT NULL, 		-->
+				#{member_pass},		<!-- 	MEMBER_PASS VARCHAR(20) UNIQUE NOT NULL, 	-->
+				#{member_name},		<!--    MEMBER_NAME VARCHAR(10) NOT NULL, 			-->
+				#{member_phone},	<!-- 	MEMBER_PHONE VARCHAR(12) UNIQUE NOT NULL, 	-->
+				#{member_email},    <!-- 	MEMBER_EMAIL VARCHAR(30) UNIQUE NOT NULL, 	-->
+				'Y',				<!-- 	MEMBER_EMAIL_AUTH VARCHAR(1) DEFAULT 'N', 	-->
+				#{member_postcode},	<!-- 	MEMBER_POSTCODE VARCHAR(6) NOT NULL, 		-->
+				#{member_address},	<!-- 	MEMBER_ADDRESS VARCHAR(100) NOT NULL, 		-->
+				'N',				<!--	MEMBER_DEL_YN VARCHAR(1) DEFAULT 'N',		-->
+				date_format(now(),'%Y%m%d%T')<!--MEMBER_DATE VARCHAR(14) NOT NULL	 		-->
+				)
+	</insert>
+	<!-- 가입 적립금-->
+	<insert id="insertCoin">
+		<selectKey keyProperty="coin_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(coin_idx) FROM coin
+		</selectKey>
+		INSERT 
+			INTO coin
+			VALUES (
+					 #{coin_idx} + 1
+					, (select member_idx
+									from member
+                            		where member_id = #{member_id})
+					,"회원가입 축하금 (3000원)"
+					,"3000"
+					,"0"
+					,"0"
+					,"3000"
+					,date_format(now(),'%Y%m%d')
+					)
+	</insert>
+
+	<!-- 아이디 중복검사 -->
+  	<select id="idCheck" resultType="int">
+  		SELECT COUNT(member_id) FROM member WHERE member_id= #{member_id}
+  	</select>
+  	<!-- 메일 중복검사 -->
+  	<select id="mailCheck" resultType="int">
+  		SELECT COUNT(member_email) FROM member WHERE member_email= #{member_email}
+  	</select>
+
+	
+	<!-- 탈퇴여부 -->
+	<select id="checkDel" resultType="string">
+		SELECT member_del_yn 
+			FROM member 
+				WHERE member_id = #{member_id}
+	</select>
+	
+
+	<!-- 로그인 -->
+	<select id="selectPasswd" resultType="string">
+		SELECT member_pass 
+		FROM member
+		WHERE member_id = #{member_id}
+	</select>
+	
+
+	<!-- 멤버 조회 -->
+	<!-- => 파라미터는 메서드 전달된 파라미터 변수명과 동일한 이름 사용 -->
+	<!-- => 결과 타입은 1개 레코드 정보를 저장할 MemberVO 타입 지정 -->
+	<select id="selectMemberInfo"
+		resultType="com.itwillbs.Code_Green.vo.MemberVO">
+		SELECT * FROM member
+		WHERE member_id=#{member_id}
+	</select>
+
+	<!-- 이메일 조회 -->
+	<select id="selectMemberEmail"
+		resultType="com.itwillbs.Code_Green.vo.MemberVO">
+		SELECT * FROM member
+		WHERE member_email = #{member_email}
+	</select>
+
+
+	<!-- 정보 수정 -->
+	<update id="modifyMemberInfo">
+		UPDATE member
+		SET 
+			member_id = #{member_id},
+			member_name = #{member_name},
+			member_pass = #{member_pass},
+		    member_phone = #{member_phone},
+ 	        member_email = #{member_email}, 
+			member_postcode = #{member_postcode}, 
+			member_address = #{member_address}
+			
+		WHERE 
+			member_id = #{member_id}
+	</update>
+	
+	
+	
+	<!--  마이페이지 // 팔로우 브랜드 리스트 -->
+	<select id="selectFollowList" resultType="com.itwillbs.Code_Green.vo.FollowVO">
+		 SELECT  f.follow_idx,
+		 		 f.rf_member_idx,
+		  		 mb.member_id,
+	       		 f.rf_manager_idx,
+	       		 ff.store_follower_cnt,
+		   		 f.follow_date,
+	       		 m.manager_brandname,
+	       		 m.manager_original_file
+			FROM follow f
+			LEFT JOIN
+					(SELECT rf_manager_idx,count(*) AS store_follower_cnt FROM follow GROUP BY rf_manager_idx) AS ff
+			ON f.rf_manager_idx = ff.rf_manager_idx
+			LEFT JOIN
+					(SELECT member_idx, member_id from member) AS mb
+			ON f.rf_member_idx = mb.member_idx
+			LEFT JOIN 
+					(SELECT manager_idx, manager_brandname,manager_original_file FROM manager) AS m
+			ON f.rf_manager_idx = m.manager_idx
+			WHERE 
+					mb.member_id=#{member_id}
+			ORDER BY 
+					f.follow_date DESC
+			LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 마이페이지 - 팔로우브랜드 리스트 카운트 -->
+	<select id="selectFollowListCount" resultType="integer">
+		SELECT count(*)
+			FROM follow
+			WHERE rf_member_idx = #{member_idx}
+	</select>
+	
+	<!-- 마이페이지 - 팔로우브랜드 언팔로우 -->
+	<delete id="deleteFollowBrand">
+		DELETE
+			FROM follow
+			WHERE 
+				rf_member_idx = #{rf_member_idx}
+				AND 
+				rf_manager_idx = #{rf_manager_idx}
+	</delete>
+	
+	<!-- 마이페이지 // 내정보 카운트 테이블 -->
+	<select id="selectMyCountInfo" resultType="com.itwillbs.Code_Green.vo.MemberVO">
+		SELECT	m.member_idx,
+			    m.member_id,
+			    m.member_name,
+			    m.member_email,
+			    c.coin_total,
+			    h.heart_count,
+			    b.board_count,
+			    f.follow_count,
+			    q.qna_count,
+			    s.order_count
+			FROM member m
+			LEFT JOIN 
+					(SELECT rf_member_idx, coin_total FROM coin WHERE rf_member_idx = #{member_idx} ORDER BY coin_idx DESC limit 1) AS c
+			ON m.member_idx = c.rf_member_idx
+			LEFT JOIN 
+					(SELECT rf_member_idx, count(*) AS heart_count FROM heart GROUP BY rf_member_idx) AS h
+			ON m.member_idx = h.rf_member_idx
+			LEFT JOIN 
+					(SELECT board_id, count(*) AS board_count FROM board WHERE board_type='커뮤' GROUP BY board_id) AS b
+			ON m.member_id = b.board_id
+			LEFT JOIN 
+					(SELECT rf_member_idx, count(*) AS follow_count FROM follow GROUP BY rf_member_idx) AS f
+			ON m.member_idx = f.rf_member_idx
+			LEFT JOIN 
+					(SELECT qna_id, count(*) AS qna_count FROM qna WHERE qna_type='1:1문의' GROUP BY qna_id) AS q
+			ON m.member_id = q.qna_id
+			LEFT JOIN 
+					(SELECT rf_member_idx, count(*) AS order_count FROM sell group by rf_member_idx) AS s
+			ON m.member_idx = s.rf_member_idx 
+			WHERE m.member_idx = #{member_idx}
+	</select>
+	
+	
+	
+	
+	<!-- 마이페이지 // 메인:최근주문목록(1개월내) -->
+	<select id="selectMyRecentOrderList" resultType="com.itwillbs.Code_Green.vo.SellVO">
+		SELECT * 
+			FROM sell 
+			WHERE rf_member_idx = #{sIdx}
+			AND 
+				TIMESTAMPDIFF(month , now(), SELL_DATE)>-#{month}
+			ORDER BY sell_date DESC
+	</select>
+	
+	
+	
+	<!-- 회원 탈퇴처리 (사실은 update 구문으로 삭제한 회원으로 처리됨) -->
+	<update id="memberDelete">
+        UPDATE  member
+         SET member_del_yn = "Y"
+         WHERE member_id = #{member_id}
+	</update>
+	
+	
+	
+	<!-- 마이페이지 // 신고내역목록 -->
+	<select id="selectReportList" resultType="com.itwillbs.Code_Green.vo.ReportVO">
+		SELECT * 
+			FROM report
+				WHERE reporter = #{member_id}
+			ORDER BY report_date DESC
+			LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	
+	
+	
+	<!-- 마이페이지 // 신고내역목록 갯수 카운트 -->
+	<select id="selectReportListCount" resultType="integer">
+		SELECT count(*)
+			FROM report
+				WHERE reporter = #{member_id}
+	</select>
+	
+	
+	
+	
+	
+	
+	
+</mapper>

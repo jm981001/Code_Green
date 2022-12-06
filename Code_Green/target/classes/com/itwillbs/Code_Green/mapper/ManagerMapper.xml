@@ -1,0 +1,1058 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.ManagerMapper">
+   
+   <!-- 가입 -->
+   <insert id="insertManager">
+      <selectKey keyProperty="manager_idx" resultType="integer" order="BEFORE">
+            SELECT MAX(manager_idx) FROM manager
+         </selectKey>
+         INSERT INTO manager
+         VALUES (
+               #{manager_idx} + 1,
+               #{manager_id},             <!--    MANAGER_ID VARCHAR(16)UNIQUE NOT NULL,          -->
+               #{manager_pass},          <!--    MANAGER_PASS VARCHAR(20)UNIQUE NOT NULL,       -->
+               #{manager_name},          <!--    MANAGER_NAME VARCHAR(10) NOT NULL,             -->
+               #{manager_brandname},      <!--    MANAGER_BRANDNAME VARCHAR(20) NOT NULL,          -->
+               #{manager_info},
+               #{manager_storecode},      <!--    MANAGER_STORECODE VARCHAR(20) NOT NULL,       -->
+               #{manager_phone},          <!--    MANAGER_PHONE VARCHAR(12) NOT NULL UNIQUE,       -->
+               #{manager_email},          <!--    MANAGER_EMAIL VARCHAR(30) NOT NULL UNIQUE,       -->
+               'N',                  <!--    MANAGER_EMAIL_AUTH VARCHAR(1) DEFAULT 'N',       -->
+               #{manager_postcode},       <!--    MANAGER_POSTCODE VARCHAR(6) NOT NULL,          -->
+               #{manager_address},          <!--    MANAGER_ADDRESS VARCHAR(100) NOT NULL,          -->
+               'N',                  <!--    MANAGER_ADMINAUTH VARCHAR(1) DEFAULT 'N',       -->
+               #{manager_realfile},       <!--    MANAGER_REALFILE VARCHAR(30) NOT NULL,          -->
+               #{manager_original_file},   <!--   MANAGER_ORIGINAL_FILE VARCHAR(30) NOT NULL,    -->
+               'N',                  <!--    MANAGER_DEL_YN VARCHAR(1) DEFAULT 'N',          -->
+               date_format(now(),'%Y%m%d%T')<!--   MANAGER_DATE VARCHAR(14) NOT NULL             -->
+               )
+   </insert>
+   
+   <!-- 아이디 중복검사 -->
+     <select id="idCheckM" resultType="int">
+        SELECT COUNT(manager_id) FROM manager WHERE manager_id= #{manager_id}
+     </select>
+     <!-- 메일 중복검사 -->
+     <select id="mailCheckM" resultType="int">
+        SELECT COUNT(manager_email) FROM manager WHERE manager_email= #{manager_email}
+     </select>
+
+<!-- 
+   BCryptPasswordEncoder 객체를 활용하여 로그인을 수행할 때
+   암호문으로 저장되어 있는 패스워드 조회하기 위한 SELECT 구문 작성
+   => 이 때, MemberVO 타입을 resultType 으로 선언해도 되지만
+      패스워드 컬럼 1개의 문자 데이터이므로 string(String) 타입으로 선언해도 된다!
+   -->
+   <!-- 로그인 -->
+   <select id="selectPasswd" resultType="string">
+      SELECT manager_pass 
+      FROM manager
+      WHERE manager_id = #{manager_id}
+   </select>
+
+   
+<!--    3. 브랜드 정보 조회 수행을 위한 select 태그 작성 -->
+<!--    => ManagerMapper 객체의 selectManagerInfo() 메서드명을 id 속성값으로 지정 -->
+<!--    => 파라미터는 메서드 전달된 파라미터 변수명과 동일한 이름 사용 -->
+<!--    => 결과 타입은 1개 레코드 정보를 저장할 ManagerVO 타입 지정 -->
+   
+   <select id="selectManagerInfo" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+      SELECT * FROM manager
+      WHERE MANAGER_ID=#{manager_id}
+   </select>
+
+<!--  브랜드 정보조회(브랜드마이페이지) -->
+
+   <select id="selectBrandInfo" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+      SELECT * FROM manager
+      WHERE MANAGER_ID=#{sId}
+   </select>
+
+   <!--브랜드 정보 수정 -->
+   <update id="updateBrandInfo">
+      UPDATE manager
+      SET 
+      
+         manager_id = #{manager_id},
+         manager_pass = #{manager_pass},
+         manager_name = #{manager_name},
+         manager_brandname = #{manager_brandname},
+         manager_storecode = #{manager_storecode},
+          manager_phone = #{manager_phone},
+            manager_email = #{manager_email}, 
+         manager_postcode = #{manager_postcode}, 
+         manager_address = #{manager_address} ,
+         manager_realfile  = #{manager_realfile},  
+           manager_original_file =#{manager_original_file}
+         
+      WHERE 
+         manager_id = #{manager_id}
+   </update>
+
+   
+   <!--브랜드 정보 삭제(탈퇴)- 영구삭제x,로그인안되게 -->
+   <update id="deleteBrand">
+      UPDATE  manager
+      SET
+         manager_del_yn = 'Y'
+      WHERE
+          manager_id = #{manager_id}
+   
+   </update>
+
+
+<!-- 상품 목록 조회 (검색기능추가)-->
+
+   <select id="selectItemList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+      select i.item_idx, 
+            i.re_manager_idx,
+            i.item_name,
+            i.item_info,
+            i.item_packing, 
+            i.item_category, 
+            i.item_price,
+            i.item_sale, 
+            i.item_stock, 
+            i.item_status,  
+            i.item_readcount,  
+            i.item_date,
+            m.manager_brandname
+           
+       FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+       WHERE m.manager_id= #{ id}
+      
+   
+   <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('item_name')">
+               AND i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_category')">
+               AND i.item_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_packing')">
+               AND i.item_packing LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_stock')">
+               AND i.item_stock LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('brand_name')">
+               AND m.manager_brandname LIKE '%${keyword}%' 
+               </when>
+            </choose>
+   </if>
+        ORDER BY i.item_idx DESC
+           LIMIT #{startRow}, #{listLimit}
+   </select>
+   
+   
+   <!-- 상품 목록(글) 조회 -->
+   <select id="selectProducts" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+      select i.item_idx, 
+            i.re_manager_idx,
+            i.item_name,
+            i.item_info,
+            i.item_packing, 
+            i.item_category, 
+            i.item_price,
+            i.item_sale, 
+            i.item_stock, 
+            i.item_status,  
+            i.item_readcount,  
+            i.item_date,
+            m.manager_brandname,
+            f.file1,
+            f.file2
+           
+       FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+        LEFT JOIN    
+            file_item f 
+         ON  
+            i.item_idx = f.rf_item_idx
+                  
+       WHERE i.item_idx=#{item.itemModify_idx}
+   
+
+   </select>
+   
+   <!-- 상품 목록 갯수 조회 -->
+   
+    <select id="selectItemListCount" resultType="integer">
+   
+      SELECT 
+      COUNT(*)
+          FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+      
+   
+   <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('item_name')">
+               WHERE i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_category')">
+               WHERE i.item_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_packing')">
+               WHERE i.item_packing LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_stock')">
+               WHERE i.item_stock LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('brand_name')">
+               WHERE m.manager_brandname LIKE '%${keyword}%' 
+               </when>
+            </choose>
+   </if>
+         
+
+    </select>
+   
+   
+   <!--상품 상세 조회 -->
+   <select id="selectItemInfo" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+      SELECT * FROM item
+      WHERE  
+          item_idx=#{item_idx} 
+          
+   </select> 
+   
+
+   <!--새로운 상품 등록(글) -->
+
+   <insert id="insertProducts">
+   
+   INSERT INTO ITEM
+   
+   VALUES(
+         IFNULL(
+               (SELECT 
+                  MAX(item_idx)
+                FROM ITEM i
+               ),0
+              )+ 1, 
+         #{manager_idx},
+         #{item.item_name}, 
+         #{item.item_info}, 
+         #{item.item_packing}, 
+         #{item.item_category}, 
+         #{item.item_price}, 
+         #{item.item_sale}, 
+         #{item.item_stock}, 
+         #{item.item_status}, 
+         '0',
+         date_format(now(),'%Y%m%d')
+         )
+   </insert>
+   
+      <!--새로운 상품 등록(사진) -->
+   <insert id="insertProductsFile">
+      <selectKey keyProperty="file_item_idx" resultType="integer" order="BEFORE">
+       SELECT 
+              MAX(file_item_idx) 
+         FROM  
+                file_item
+      </selectKey>
+       INSERT
+         INTO 
+                file_item
+      VALUES(
+             #{file_item_idx} + 1,
+             IFNULL(#{file1},'N'),
+             IFNULL(#{file2},'N'),
+             (SELECT MAX(item_idx) FROM item)
+           )
+   
+   </insert>
+   
+
+   <!-- 상품 수정 (파일) -->
+      <update id="updateItemFileModify">
+      UPDATE 
+              file_item
+         SET
+            rf_item_idx = #{item_idx},
+            file1 = IFNULL(#{file1},''),
+            file2 = IFNULL(#{file2},'')
+            
+       WHERE 
+              rf_item_idx = #{item_idx}
+   </update>   
+   
+
+   <!-- 상품 수정 (글) -->
+      <update id="updateItemModify">
+      UPDATE
+             item
+         SET
+            item_name = #{item_name},
+            item_price = #{item_price},
+            item_packing = #{item_packing},
+            item_category = #{item_category},
+            item_info = #{item_info},
+            item_stock = #{item_stock},
+            item_status = #{item_status}
+          WHERE 
+              item_idx = #{item_idx}
+   </update>
+   
+   
+   <!-- 상품 삭제 -->
+   <delete id="deleteItem">
+   DELETE
+        FROM
+               item
+       WHERE  
+             item_idx = #{item_idx} 
+   </delete>
+
+   <!-- 상품 삭제 전 파일명(file1) 조회  -->   
+   <select id="selectRealFile1" resultType="string">
+      SELECT 
+              file1
+        FROM 
+              file_item
+        WHERE
+            rf_item_idx = #{item_idx}
+   </select>   
+   
+   <!-- 상품 삭제전 파일2 명 조회 -->   
+   <select id="selectRealFile2" resultType="string">
+      SELECT 
+            file2
+        FROM  
+              file_item
+       WHERE
+            rf_item_idx = #{item_idx}
+   </select>
+   
+   <!-- 상품 삭제(파일) -->
+   <delete id="deleteItemFile">
+      DELETE
+        FROM
+               file_item
+       WHERE  
+             rf_item_idx = #{item_idx}        
+   </delete>
+
+
+
+
+
+
+   <!--상품 문의 목록 조회(검색기능추가) -->
+   <select id="selectQnaBoardList" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+      SELECT * FROM qna
+      WHERE
+         qna_type='상품문의'
+         
+      <if test="!keyword.equals('')">
+<!--             2. 검색타입(search)에 따른 WHERE 변경 -->
+            <choose>
+               <when test="searchType.equals('qna_subject')">
+               AND qna_subject LIKE '%${keyword}%' 
+               </when>
+               <when test="searchType.equals('qna_category')">
+               AND qna_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('qna_id')">
+               AND qna_id LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('qna_answer')">
+               AND qna_answer LIKE '%${keyword}%'
+               </when>
+               
+            </choose>
+   </if>
+        ORDER BY qna_idx DESC
+          LIMIT #{startRow}, #{listLimit}
+          
+          
+          
+         
+   </select>
+   
+   <!-- 상품 문의 목록 갯수 조회(검색 기능 추가) -->
+   <select id="selectQnaBoardListCount" resultType="integer">
+      SELECT 
+           COUNT(*)
+            FROM qna
+            WHERE qna_type='상품문의'
+      <if test="!keyword.equals('')">
+<!--             2. 검색타입(search)에 따른 WHERE 변경 -->
+            <choose>
+               <when test="searchType.equals('qna_subject')">
+               AND qna_subject LIKE '%${keyword}%' 
+               </when>
+               <when test="searchType.equals('qna_category')">
+               AND qna_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('qna_id')">
+               AND qna_id LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('qna_answer')">
+               AND qna_answer LIKE '%${keyword}%'
+               </when>
+               
+            </choose>
+   </if>
+   </select>
+
+
+   <!--상품문의글 상세 조회 -->
+   <select id="selectQnaInfo" resultType="com.itwillbs.Code_Green.vo.QnaVO">
+      SELECT * FROM qna
+      WHERE  
+          qna_idx=#{qna_idx} 
+          
+   </select>
+
+
+   
+     <!-- 상품문의글 답변 등록 -->   
+   <update id="updateQnaboard">
+      UPDATE qna
+      SET
+          qna_answer=#{qna_answer }
+         ,qna_category="답변완료"
+      WHERE
+         qna_idx=#{qna_idx }
+   </update>
+   
+   
+      <!-- 상품문의글 삭제 -->
+   <update id="deleteQnaboard">
+      UPDATE qna
+      SET
+          qna_answer="N"
+         ,qna_category="답변대기"
+      WHERE
+         qna_idx=#{qna_idx }
+   </update>
+   
+   
+
+      
+      
+   <!-- 게시물 조회수 증가 -->
+   <update id="updateReadcount">
+      UPDATE board
+         SET 
+            board_readcount = board_readcount + 1
+         WHERE
+            board_idx = #{board_idx}
+   </update>
+      
+      
+      
+      
+   <!-- 글 상세정보 조회 -->
+   <select id="selectItemDetail" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+      SELECT * 
+         FROM item
+         WHERE 
+         item_idx = #{item_idx}
+   </select>   
+   
+<!--    주문 목록 조회 (검색기능추가)-->
+
+   <select id="selectOrderList" resultType="com.itwillbs.Code_Green.vo.SellVO">
+
+
+<!--          SELECT      -->
+<!--                   s.SELL_IDX -->
+<!--                   ,s.RF_MEMBER_IDX -->
+<!--                      ,s.SELL_AMOUNT -->
+<!--                      ,s.SELL_USECOIN -->
+<!--                      ,s.SELL_TOTAL_PRICE -->
+<!--                      ,s.SELL_STATUS -->
+<!--                      ,s.SELL_POSTCODE -->
+<!--                      ,s.SELL_ADDRESS -->
+<!--                      ,s.SELL_PHONE  -->
+<!--                   ,s.SELL_RECEIVER  -->
+                
+<!--                   ,s.SELL_DATE  -->
+<!--                   ,s.SELL_PAY_TYPE  -->
+<!--                   ,s.SELL_PAY_STATUS  -->
+<!--                   ,s.SELL_PAY_DATE  -->
+<!--                   ,s.SELL_ORDER_NUMBER -->
+                  
+<!--                   ,d.SELL_DETAIL_IDX -->
+<!--                   ,d.RF_SELL_IDX -->
+<!--                   ,d.RF_ITEM_IDX -->
+<!--                   ,d.SELL_AMOUNT -->
+<!--                   ,d.SELL_REVIEW_STATUS -->
+<!--                    ,f.FILE1 -->
+<!--                        ,i.ITEM_NAME  -->
+<!--                        ,i.ITEM_PRICE -->
+<!--                        ,i.ITEM_IDX -->
+<!--                        ,i.ITEM_CATEGORY -->
+<!--                        ,m.MANAGER_BRANDNAME -->
+                       
+<!--                from sell_detail d -->
+<!--                left join sell s -->
+<!--                on s.sell_idx = d.rf_sell_idx -->
+<!--                   left join item i  -->
+<!--                      on d.RF_ITEM_IDX = i.item_idx -->
+<!--                    left join file_item f  -->
+<!--                      on d.RF_ITEM_IDX = f.RF_ITEM_IDX -->
+<!--                   left join sell l --> 
+<!--                       on s.rf_sell_idx = l.sell_idx --> 
+<!--                   left join manager m -->
+<!--                      on m.MANAGER_IDX = i.RE_MANAGER_IDX -->
+                  
+<!--                    where i.RE_MANAGER_IDX =(select manager_idx -->
+<!--                                  from manager -->
+<!--                                         where manager_id = #{id}) -->
+                                        
+                  select * from sell s 
+		left join sell_detail d
+         on s.sell_idx = d.rf_sell_idx
+		left join item i 
+          on d.rf_item_idx = i.item_idx
+		left join manager m 
+         on m.manager_idx = i.re_manager_idx
+         where m.manager_id = #{id}
+                                        
+                                        
+<!--         수정해야함                                 -->
+                                        
+         <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('sell_status')">
+               AND s.sell_status LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_name')">
+               AND i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('sell_pay_status')">
+               AND s.sell_pay_status LIKE '%${keyword}%'
+               </when>
+               
+            </choose>
+   </if>                                  
+         ORDER BY d.SELL_DETAIL_IDX DESC 
+          LIMIT  #{startRow}, #{listLimit}  
+
+   </select>   
+   
+   
+   
+
+<!-- 주문 목록 갯수 조회 -->
+   
+   <select id="selectOrderListCount" resultType="integer">
+   
+      SELECT 
+      COUNT(*)
+              
+               from sell_detail d
+               left join sell s
+               on s.sell_idx = d.rf_sell_idx
+                  left join item i 
+                     on d.RF_ITEM_IDX = i.item_idx
+                   left join file_item f 
+                     on d.RF_ITEM_IDX = f.RF_ITEM_IDX
+                  left join manager m
+                     on m.MANAGER_IDX = i.RE_MANAGER_IDX
+                    where i.RE_MANAGER_IDX =(select manager_idx
+                                 from manager
+                                        where manager_id = #{id})
+                  
+                                        
+         <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('sell_status')">
+               AND s.sell_status LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_name')">
+               AND i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('sell_pay_status')">
+               AND s.sell_pay_status LIKE '%${keyword}%'
+               </when>
+               
+            </choose>
+   </if>                                  
+
+    </select>
+    
+       <!--주문 상세 조회 -->
+   <select id="selectOrderInfo" resultType="com.itwillbs.Code_Green.vo.SellVO">
+       SELECT * FROM   
+	         sell_detail d
+		         left join sell s
+		         on s.sell_idx = d.rf_sell_idx
+		            left join item i 
+		               on d.RF_ITEM_IDX = i.item_idx
+		             left join file_item f 
+		               on d.RF_ITEM_IDX = f.RF_ITEM_IDX
+		            left join manager m
+		               on m.MANAGER_IDX = i.RE_MANAGER_IDX
+		             where i.RE_MANAGER_IDX =(select manager_idx
+												from manager
+												where manager_id = #{sId})
+							and s.sell_order_number = #{sell_order_number}
+						
+			 
+	</select> 
+
+   
+   <!-- 주문 수정  -->
+      <update id="updateOrders">
+      UPDATE
+             item
+         SET
+            item_name = #{item_name},
+            item_price = #{item_price},
+            item_packing = #{item_packing},
+            item_category = #{item_category},
+            item_info = #{item_info},
+            item_stock = #{item_stock},
+            item_status = #{item_status}
+          WHERE 
+              item_idx = #{item_idx}
+   </update>
+    
+       <!--재고  목록 조회 -->
+   <select id="selectStockList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+            select i.item_idx, 
+            i.re_manager_idx,
+            i.item_name,
+            i.item_info,
+            i.item_packing, 
+            i.item_category, 
+            i.item_price,
+            i.item_sale, 
+            i.item_stock, 
+            i.item_status,  
+            i.item_readcount,  
+            i.item_date,
+            m.manager_brandname
+           
+       FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+       WHERE m.manager_id= #{ id}
+      
+   
+   <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('item_name')">
+               AND i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_category')">
+               AND i.item_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_packing')">
+               AND i.item_packing LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_stock')">
+               AND i.item_stock LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('brand_name')">
+               AND m.manager_brandname LIKE '%${keyword}%' 
+               </when>
+            </choose>
+   </if>
+        ORDER BY i.item_idx DESC
+           LIMIT #{startRow}, #{listLimit}
+   </select>
+    
+     <!-- 재고 목록 갯수 조회 -->
+   
+    <select id="selectStockListCount" resultType="integer">
+   
+      SELECT 
+      COUNT(*)
+          FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+      
+   
+   <if test="!keyword.equals('')">
+            <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
+               <choose>
+               <when test="searchType.equals('item_name')">
+               WHERE i.item_name LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_category')">
+               WHERE i.item_category LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_packing')">
+               WHERE i.item_packing LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('item_stock')">
+               WHERE i.item_stock LIKE '%${keyword}%'
+               </when>
+               <when test="searchType.equals('brand_name')">
+               WHERE m.manager_brandname LIKE '%${keyword}%' 
+               </when>
+            </choose>
+   </if>
+         
+
+    </select>
+    
+       <!-- 재고 목록(글) 조회 -->
+   <select id="selectstock" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+      select i.item_idx, 
+            i.re_manager_idx,
+            i.item_name,
+            i.item_info,
+            i.item_packing, 
+            i.item_category, 
+            i.item_price,
+            i.item_sale, 
+            i.item_stock, 
+            i.item_status,  
+            i.item_readcount,  
+            i.item_date,
+            m.manager_brandname
+           
+       FROM item i  JOIN manager m  ON i.re_manager_idx= m. manager_idx 
+        LEFT JOIN    
+            file_item f 
+         ON  
+            i.item_idx = f.rf_item_idx
+                  
+       WHERE i.item_idx=#{item_idx}
+   
+   
+
+   </select>
+   
+       
+       <!--재고 상세 조회 -->
+   <select id="selectStockInfo" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+            SELECT * FROM item
+      WHERE  
+          item_idx=#{item_idx} 
+          
+   </select> 
+   
+      <!-- 재고 수정 (글) -->
+      <update id="updateStockModify">
+      UPDATE
+             item
+         SET
+            item_name = #{item_name},
+            item_price = #{item_price},
+            item_packing = #{item_packing},
+            item_category = #{item_category},
+            item_info = #{item_info},
+            item_stock = #{item_stock},
+            item_status = #{item_status}
+          WHERE 
+              item_idx = #{item_idx}
+   </update>
+   
+   
+   
+   
+    
+
+
+<!-- 매출 3순위 -->
+   <select id="getTop3" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+       select    i.item_idx, 
+               i.re_manager_idx,
+               i.item_name,
+               i.item_info,
+               i.item_packing, 
+               i.item_category, 
+               i.item_price,
+               i.item_sale, 
+               i.item_stock, 
+               i.item_status,  
+               i.item_readcount,  
+               i.item_date, 
+               m.manager_brandname,
+               ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
+               ifnull(truncate( a.board_star_score,1),0) AS board_star_score,
+                   ifnull(s.count,0) as count,
+<!--                    RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking, -->
+                   ifnull(b.review,0)as review,
+                   ifnull(h.heart,0)as heart
+                   
+            FROM item i 
+             JOIN manager m 
+                     ON i.re_manager_idx =  m.manager_idx
+               LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+                         , avg(s.board_star_score) as board_star_score
+                       FROM board b join board_star s on b.board_idx = s.rf_board_idx
+                      group by b.BOARD_ITEM_IDX) a 
+                   ON i.item_idx = a.BOARD_ITEM_IDX 
+            LEFT JOIN (select RF_ITEM_IDX,  count(*) as count 
+                     from sell_detail
+                     group by RF_ITEM_IDX) s
+               ON s.RF_ITEM_IDX = i.item_idx
+            LEFT JOIN  (select *, count(*) as review 
+                        from board b 
+                           left join item i 
+                              on b.board_item_idx = i.item_idx
+                        where i.re_manager_idx=(select manager_idx 
+                                             from manager
+                                             where manager_id = #{sId})
+                        group by b.board_item_idx) b
+                   ON b.board_item_idx = i.item_idx
+         left join ( select *, count(*)+100 as heart 
+                  from heart h 
+                     left join item i 
+                        on h.rf_item_idx = i.item_idx
+                  where i.re_manager_idx=(select manager_idx 
+                                       from manager
+                                       where manager_id = #{sId})
+                                       group by h.rf_item_idx) h
+                  on h.rf_item_idx = i.item_idx
+          where i.re_manager_idx = (select manager_idx 
+                              from manager
+                              where manager_id = #{sId})
+          ORDER BY count desc 
+             limit 3
+ 
+    </select>
+
+
+<!-- 팔로우 수 -->
+   <select id="follow" resultType="integer">
+           select count(*) as follow
+              from follow
+              where RF_MANAGER_IDX =(select manager_idx 
+                              from manager
+                              where manager_id = #{sId})
+   </select>
+   
+   
+<!-- 총매출,총주문건수 -->
+<select id="selectTotalMoneyOrder" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+   SELECT  
+         COUNT(sd.sell_amount) AS orderCount,
+         sum((i.item_price * sd.sell_amount)) as brandtotal
+   FROM sell_detail sd LEFT JOIN item i
+   ON sd.rf_item_idx = i.item_idx
+   LEFT JOIN manager m
+   ON i.re_manager_idx = m.manager_idx
+   where m.manager_id=#{sId};
+</select>
+   
+   
+   
+   <!-- 매출순위 더보기 -->
+   <select id="getTop10" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+       select    i.item_idx, 
+               i.re_manager_idx,
+               i.item_name,
+               i.item_info,
+               i.item_packing, 
+               i.item_category, 
+               i.item_price,
+               i.item_sale, 
+               i.item_stock, 
+               i.item_status,  
+               i.item_readcount,  
+               i.item_date, 
+               m.manager_brandname,
+               ifnull(round(truncate( a.board_star_score,1),0),0) AS score,
+               ifnull(truncate( a.board_star_score,1),0) AS board_star_score,
+                   ifnull(s.count,0) as count,
+<!--                    RANK() OVER (ORDER BY count DESC , i.item_idx asc) AS ranking, -->
+                   ifnull(b.review,0)as review,
+                   ifnull(h.heart,0)as heart
+                   
+            FROM item i 
+             JOIN manager m 
+                     ON i.re_manager_idx =  m.manager_idx
+               LEFT JOIN (SELECT b.BOARD_ITEM_IDX
+                         , avg(s.board_star_score) as board_star_score
+                       FROM board b join board_star s on b.board_idx = s.rf_board_idx
+                      group by b.BOARD_ITEM_IDX) a 
+                   ON i.item_idx = a.BOARD_ITEM_IDX 
+            LEFT JOIN (select RF_ITEM_IDX,  count(*) as count 
+                     from sell_detail
+                     group by RF_ITEM_IDX) s
+               ON s.RF_ITEM_IDX = i.item_idx
+            LEFT JOIN  (select *, count(*) as review 
+                        from board b 
+                           left join item i 
+                              on b.board_item_idx = i.item_idx
+                        where i.re_manager_idx=(select manager_idx 
+                                             from manager
+                                             where manager_id = #{sId})
+                        group by b.board_item_idx) b
+                   ON b.board_item_idx = i.item_idx
+         left join ( select *, count(*)+100 as heart 
+                  from heart h 
+                     left join item i 
+                        on h.rf_item_idx = i.item_idx
+                  where i.re_manager_idx=(select manager_idx 
+                                       from manager
+                                       where manager_id = #{sId})
+                                       group by h.rf_item_idx) h
+                  on h.rf_item_idx = i.item_idx
+          where i.re_manager_idx = (select manager_idx 
+                              from manager
+                              where manager_id = #{sId})
+          ORDER BY count desc 
+             limit 10
+
+    </select>
+   
+    
+      <!--정산 총매출 -->
+      <select id="selectSalesTotal" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+   SELECT  
+         COUNT(sd.sell_amount) AS TotalCount,
+         sum(i.item_price * sd.sell_amount) as salesTotal
+   FROM sell_detail sd LEFT JOIN item i
+   ON sd.rf_item_idx = i.item_idx
+   LEFT JOIN manager m
+   ON i.re_manager_idx = m.manager_idx
+   where m.manager_id=#{sId}
+   
+   
+      
+      </select>
+      <!--정산 한달매출 -->
+      <select id="selectSalesMonth" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+       SELECT
+         date_format(s.sell_date, '%Y-%m') salesMonth,
+          cast(truncate(sum(i.ITEM_PRICE * sd.SELL_AMOUNT),2) as char(50)) as sum
+      FROM
+         sell s,
+         item i,
+         manager m,
+         sell_detail sd
+      WHERE
+         sd.rf_item_idx = i.item_idx
+         AND s.sell_idx = sd.rf_sell_idx
+         AND i.re_manager_idx = m.manager_idx
+         AND m.manager_id = #{sId}
+      GROUP BY
+         date_format(s.sell_date, '%Y-%m')
+      ORDER BY
+         salesMonth
+
+
+   
+   
+      </select>
+      <!--정산 일주일매출 -->
+      <select id="selectSalesWeek" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+      
+<!--          SELECT -->
+<!--             date_format(s.sell_date, '%Y-%v') salesWeek, -->
+<!--            cast(truncate(sum(i.ITEM_PRICE * sd.SELL_AMOUNT),2) as char(50)) as sum -->
+<!--          FROM -->
+<!--             sell s, -->
+<!--             item i, -->
+<!--             manager m, -->
+<!--             sell_detail sd -->
+<!--          WHERE -->
+<!--             sd.rf_item_idx = i.item_idx -->
+<!--             AND s.sell_idx = sd.rf_sell_idx -->
+<!--             AND i.re_manager_idx = m.manager_idx -->
+<!--             AND m.manager_id = #{sId} -->
+<!--          GROUP BY -->
+<!--             date_format(s.sell_date, '%Y-%v') -->
+<!--          ORDER BY -->
+<!--             salesWeek; -->
+            
+<!--    SELECT DATE_FORMAT(DATE_SUB(sell_date, INTERVAL (DAYOFWEEK(sell_date)-1) DAY), '%Y/%m/%d') as start, -->
+<!--                 DATE_FORMAT(DATE_SUB(sell_date, INTERVAL (DAYOFWEEK(sell_date)-7) DAY), '%Y/%m/%d') as end, -->
+<!--              sum((i.item_price * sd.sell_amount)) as salesWeek -->
+<!--                FROM sell_detail sd LEFT JOIN item i -->
+<!--                ON sd.rf_item_idx = i.item_idx -->
+<!--                LEFT JOIN   sell s -->
+<!--                 on s.sell_idx = sd.rf_sell_idx -->
+<!--                LEFT JOIN manager m -->
+<!--                ON i.re_manager_idx = m.manager_idx -->
+<!--                where m.manager_id='itsreal' -->
+<!--             GROUP BY -->
+<!--    date_format(s.sell_date, '%y/%m/%d') -->
+<!-- ORDER BY -->
+<!--    salesweek;    -->
+    
+    
+             SELECT DATE_FORMAT(DATE_SUB(sell_date, INTERVAL (DAYOFWEEK(sell_date)-1) DAY), '%Y-%m-%d') as start,
+                DATE_FORMAT(DATE_SUB(sell_date, INTERVAL (DAYOFWEEK(sell_date)-7) DAY), '%Y-%m-%d') as end,
+            date_format(s.sell_date, '%y-%m-%d') salesWeek,
+           cast(truncate(sum(i.ITEM_PRICE * sd.SELL_AMOUNT),2) as char(50)) as sum
+         FROM
+            sell s,
+            item i,
+            manager m,
+            sell_detail sd
+         WHERE
+            sd.rf_item_idx = i.item_idx
+            AND s.sell_idx = sd.rf_sell_idx
+            AND i.re_manager_idx = m.manager_idx
+            AND m.manager_id = 'itsreal'
+         GROUP BY
+             date_format(s.sell_date, '%y-%m-%d')
+         ORDER BY
+            salesWeek;        
+            
+            
+                     
+      </select>
+      
+      
+      <!--정산 하루매출 -->
+      <select id="selectSalesDay" resultType="com.itwillbs.Code_Green.vo.ManagerVO">
+   
+               
+          SELECT
+            date_format(s.sell_date, '%Y-%m-%d') salesday,
+            cast(truncate(sum(i.ITEM_PRICE * sd.SELL_AMOUNT),2) as char(50)) as sum
+         FROM
+            sell s,
+            item i,
+            manager m,
+            sell_detail sd
+         WHERE
+            sd.rf_item_idx = i.item_idx
+            AND s.sell_idx = sd.rf_sell_idx
+            AND i.re_manager_idx = m.manager_idx
+            AND m.manager_id = #{sId}
+         GROUP BY
+            date_format(s.sell_date, '%Y-%m-%d')
+         ORDER BY
+            salesday
+      
+           
+      </select>
+      <!--정산 수수료 -->
+      
+      <select id="selectCommission" resultType="com.itwillbs.Code_Green.vo.SellVO">
+         SELECT    SUM(i.item_price * sd.sell_amount) as salesTotal
+            ,  SUM(i.item_price * sd.sell_amount) * 0.1 AS net
+   FROM sell_detail sd LEFT JOIN item i
+   ON sd.rf_item_idx = i.item_idx
+   LEFT JOIN manager m
+   ON i.re_manager_idx = m.manager_idx
+   where m.manager_id=#{sId}  
+         
+      </select>
+      
+      
+   <!--정산 순수익 -->
+         
+      <select id="selectNet" resultType="com.itwillbs.Code_Green.vo.SellVO">
+<!--       <select id="selectNet" resultType="map"> -->
+  select brand_net.salesTotal - brand_net.net AS brand_net
+ 	from (
+    	SELECT   SUM(i.item_price * sd.sell_amount) as salesTotal
+			 ,  SUM(i.item_price * sd.sell_amount) * 0.1 AS net
+   		  FROM sell_detail sd 
+   		  LEFT JOIN item i
+   		    ON sd.rf_item_idx = i.item_idx
+   		  LEFT JOIN manager m
+   			ON i.re_manager_idx = m.manager_idx
+   		 where m.manager_id = #{sId}
+   	   ) brand_net  
+      </select>
+      
+
+</mapper>

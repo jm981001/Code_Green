@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itwillbs.Code_Green.mapper.RecipeMapper">
+	
+<!-- ///////////////////////////// 레시피 페이지 내 ////////////////////////// -->
+	<!-- 기업이 올린 상품 조회 -->
+	<select id="selectMyItem" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT  
+				i.item_idx,
+        		i.item_name,
+        		i.item_price,
+       			m.manager_brandname
+		  FROM  
+		        item i
+          JOIN
+	            manager m
+	        ON  
+	            i.re_manager_idx = m.manager_idx
+	     WHERE 
+	            m.manager_id = #{sId}        
+	</select>
+	
+	<!-- 레시피 목록(글) 조회 -->
+	<select id="selectRecipeFile" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+		SELECT
+			    b.board_idx,
+			    b.board_subject,
+			    b.board_date,	   
+			    f.file1,
+			    m.manager_brandname,
+			    m.manager_id,
+			    i.item_name
+		  FROM  
+		  	    board b
+     LEFT JOIN  
+     		    file_board f
+     	    ON  
+     	        b.board_idx = f.rf_board_idx
+		  JOIN  
+		  	    manager m 
+		    ON  
+		        b.board_id = m.manager_id
+	 LEFT JOIN 	
+				item i
+			ON
+				b.board_item_idx = i.item_idx       
+		 WHERE  
+		 	    b.board_type = '레시피'
+		   AND 
+		        b.board_subject LIKE '%${keyword}%' 
+		 LIMIT 
+		        #{startRow}, #{listLimit}                 
+	</select>
+	
+	<!-- 레시피 글 목록 갯수 조회 -->
+	<select id="selectRecipeCount" resultType="integer">
+		SELECT 
+		 COUNT(*) 
+		  FROM 
+			    board
+		 WHERE 
+			    board_type = '레시피'
+		   AND 
+		        board_subject LIKE '%${keyword}%'	    
+	</select>
+	
+	<!-- 상세보기 -->
+	<select id="selectRecipe" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+		SELECT 
+		        b.board_idx,
+		        b.board_item_idx,
+			    b.board_subject,
+			    b.board_content,
+			    b.board_id,
+			    f.file1,
+			    f.file2,
+			    m.manager_brandname
+		  FROM  
+		  	    board b
+	 LEFT JOIN  
+	 		    file_board f
+	 		ON  
+	 		    b.board_idx = f.rf_board_idx
+	 LEFT JOIN  
+	 		    manager m
+	 	    ON  
+	 	        b.board_id = m.manager_id
+	 	 WHERE  
+	 	 	    b.board_idx = ${board_idx}  		
+	</select>
+	
+	<!-- 레시피 상세보기에서 사용한 상품 불러오기 -->
+	<select id="selectUseItem" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT 
+			   i.item_idx,
+			   i.item_category,
+			   i.item_name,
+			   i.item_price,
+			   m.manager_brandname,
+			   f.file1,
+			   f.file2
+		 FROM  
+		 	   item i
+		 JOIN  
+		 	   manager m
+		   ON  
+		   	   i.re_manager_idx = m.manager_idx
+		 JOIN  
+		 	   file_item f
+		   ON  
+		   	   f.rf_item_idx = i.item_idx
+		 JOIN  
+		 	   board b
+		   ON  
+		   	   b.board_item_idx = i.item_idx
+		WHERE
+			   b.board_idx = #{board_idx}
+	</select>
+	
+	<!-- 레시피 작성자(브랜드) 관련상품 불러오기 -->
+	<select id="selectRelatedItem" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT 
+			   i.item_idx,
+			   i.item_category,
+			   i.item_name,
+			   i.item_price,
+			   m.manager_brandname,
+			   f.file1,
+			   f.file2
+		 FROM  
+		 	   item i
+		 JOIN  
+		 	   manager m
+		   ON  
+		   	   i.re_manager_idx = m.manager_idx
+		 JOIN  
+		 	   file_item f
+		   ON  
+		   	   f.rf_item_idx = i.item_idx
+		 JOIN  
+		 	   board b
+		   ON  
+		   	   b.board_item_idx = i.item_idx
+		WHERE
+			   m.manager_id = #{board_id}
+	 ORDER BY
+			   rand() LIMIT 2	    	
+	</select>
+	
+	<!-- 레시피 조회수 증가 -->
+	<update id="updateReadcount">
+		UPDATE board
+			SET 
+				board_readcount = board_readcount + 1
+			WHERE
+				board_idx = #{board_idx}
+	</update>
+	
+	
+	
+	
+
+
+	
+<!-- /////////////////////////////브랜드 페이지 내 ///////////////////////////////// -->   
+   <!-- 브랜드가 올린 레시피 목록 조회 -->
+   <select id="selectMyRecipeList" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+      SELECT 
+             b.board_idx,
+             b.board_subject,
+             b.board_date,
+             i.item_name,
+             b.board_readcount
+       FROM
+              board b
+    LEFT JOIN
+              item i
+          ON      
+            b.board_item_idx = i.item_idx
+       WHERE
+             b.board_id = #{sId}
+       LIMIT 
+              #{startRow}, #{listLimit}       
+   </select>
+   
+   <!-- 브랜드가 올린 레시피 갯수 -->
+   <select id="selectMyRecipeCount" resultType="integer">
+      SELECT 
+       COUNT(*) 
+        FROM 
+             board
+       WHERE 
+             board_type = '레시피'
+         AND 
+              board_subject LIKE '%${keyword}%'
+          OR
+               board_id = #{sId}     
+   </select>
+   
+   <!-- 레시피 등록(글) -->
+	<insert id="insertRecipe">
+		INSERT 
+	      INTO 
+	            board 
+	    VALUES  (
+				IFNULL((SELECT MAX(board_idx) FROM board b),0) + 1,
+				#{use_item_idx},
+				'레시피',
+				#{board.board_id},
+				'N',
+				#{board.board_subject},
+				#{board.board_content},
+				'0',
+				date_format(now(),'%Y%m%d')
+				)
+	</insert>	
+	
+	<!-- 레시피 등록(사진) -->
+	<insert id="insertRecipeFile">
+		<selectKey keyProperty="file_board_idx" resultType="integer" order="BEFORE">
+		 SELECT 
+			     MAX(file_board_idx) 
+		   FROM  
+		  	     file_board
+		</selectKey>
+		 INSERT
+		   INTO 
+		  	     file_board
+		VALUES(
+				 #{file_board_idx} + 1,
+				 IFNULL(#{file1},'N'),
+				 IFNULL(#{file2},'N'),
+				 '', 
+				 (SELECT MAX(board_idx) FROM board)
+			  )
+	</insert>
+   
+   	<!-- 레시피 파일 수정 -->
+	<update id="updateRecipeFile">
+		UPDATE 
+		        file_board
+		   SET
+				rf_board_idx = #{board_idx},
+				file1 = IFNULL(#{file1},''),
+				file2 = IFNULL(#{file2},''),
+				file3 = '' 
+				
+		 WHERE 
+		 	    rf_board_idx = #{board_idx}
+	</update>	
+	
+	<!-- 레시피 글 수정 -->
+	<update id="updateRecipe">
+		UPDATE
+			    board
+		   SET
+				board_subject = #{board.board_subject},
+				board_content = #{board.board_content},
+				board_item_idx = #{use_item_idx}
+		 WHERE
+				board_type = '레시피'
+		   AND
+				board_idx = #{board.board_idx}	
+	</update>
+   
+	<!-- 레시피 삭제 -->
+	<delete id="deleteRecipe">
+		DELETE
+		  FROM
+		  	    board
+		 WHERE  
+		 		board_idx = #{board_idx} 	    
+	</delete>
+	
+	<!-- 레시피 삭제 전 파일명(file1) 조회  -->	
+	<select id="selectRealFile1" resultType="string">
+		SELECT 
+		        file1
+		  FROM 
+		        file_board
+		  WHERE
+				rf_board_idx = #{board_idx}
+	</select>	
+	
+	<!-- 게시글 삭제전 파일2 명 조회 -->	
+	<select id="selectRealFile2" resultType="string">
+		SELECT 
+				file2
+		  FROM  
+		  		file_board
+		 WHERE
+				rf_board_idx = #{board_idx}
+	</select>
+	
+	<!-- 레시피 삭제(파일) -->
+	<delete id="deleteRecipeFile">
+		DELETE
+		  FROM
+		  	    file_board
+		 WHERE  
+		 		rf_board_idx = #{board_idx} 	    
+	</delete>
+	
+	
+	<!-- //////////////메인 페이지/////////////// -->
+	<!-- 메인 페이지 내 레시피리스트 -->
+	<select id="selectMainRecipe" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+		SELECT
+				b.board_idx,
+				b.board_subject,
+				b.board_content,
+				f.file1
+		  FROM 
+				board b
+	 LEFT JOIN
+	 			file_board f
+	 	    ON		
+	 			b.board_idx = f.rf_board_idx
+	 	 WHERE
+	 	 		b.board_type = '레시피'		
+	  ORDER BY
+			    rand()					
+	</select>
+</mapper>

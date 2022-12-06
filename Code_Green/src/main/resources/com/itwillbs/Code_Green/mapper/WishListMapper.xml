@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.WishListMapper">
+
+<!-- 위시리스트 있는지 없는지 -->
+	<select id="checkWish" resultType="integer">
+        SELECT count(*) 
+        FROM heart
+        WHERE RF_ITEM_IDX = #{item_idx}
+              and RF_MEMBER_IDX = (SELECT member_idx 
+									FROM member
+									WHERE MEMBER_ID = #{member_id})
+	</select>
+
+
+<!-- 	위시리스트 추가 -->
+	<insert id="insertWish">
+		<selectKey keyProperty="heart_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(heart_idx) FROM heart
+		</selectKey>
+		INSERT 
+			INTO heart
+			VALUES (
+					#{heart_idx}+ 1,   
+					#{item_idx}, 
+					(SELECT member_idx 
+                  		  FROM member
+                    	  WHERE MEMBER_ID = #{member_id}),
+					date_format(now(),'%Y%m%d')
+					)
+	</insert>
+
+
+
+<!-- 위시리스트 삭제 -->
+	<delete id="removeWish">
+	   DELETE FROM heart
+			WHERE RF_ITEM_IDX = #{item_idx}
+				AND RF_MEMBER_IDX = (select member_idx 
+										from member
+										where MEMBER_ID = #{member_id})
+	
+	</delete>
+
+
+
+<!-- 위시리스트 갯수-->
+	<select id="WishCount" resultType="integer">
+		select 
+			count(*)+100 
+				from heart
+				where RF_ITEM_IDX = #{item_idx}
+	
+	</select>
+
+<!-- 추천 있는지 없는지 -->
+	<select id="checkBest" resultType="integer">
+    SELECT count(*) 
+        FROM board_best
+        WHERE RF_BOARD_IDX = #{board_idx}
+              and RF_MEMBER_IDX = (SELECT member_idx 
+									FROM member
+									WHERE MEMBER_ID =  #{member_id});
+	</select>
+
+
+
+
+<!-- 	추천 추가 -->
+	<insert id="insertBest">
+		<selectKey keyProperty="board_best_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(board_best_idx) FROM board_best
+		</selectKey>
+		INSERT 
+			INTO board_best
+			VALUES (
+					#{board_best_idx}+ 1,   
+					(SELECT member_idx 
+                  		  FROM member
+                    	  WHERE MEMBER_ID = #{member_id}),
+					#{board_idx}
+					)
+	</insert>
+
+
+
+<!-- 추천 삭제 -->
+	<delete id="removeBest">
+	   DELETE FROM board_best
+			WHERE RF_BOARD_IDX = #{board_idx}
+				AND RF_MEMBER_IDX = (select member_idx 
+										from member
+										where MEMBER_ID = #{member_id})
+	
+	</delete>
+
+
+<!-- 추천 갯수-->
+	<select id="BestCount" resultType="integer">
+		select 
+			count(*)
+				from board_best
+				where RF_BOARD_IDX = #{board_idx}
+	
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

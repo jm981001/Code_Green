@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.ReviewMapper">
+
+	
+<!-- 	리뷰 등록 -->
+	<insert id="insertReview">
+		<selectKey keyProperty="board_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(board_idx) FROM board
+		</selectKey>
+		INSERT 
+			INTO board
+			VALUES (
+					#{board_idx}+ 1,   
+					#{item_idx}, 
+					"후기", 
+					#{board_id}, 
+					"N", 
+					#{board_subject}, 
+					#{board_content}, 
+					"0", 
+					date_format(now(),'%Y%m%d')
+					)
+	</insert>
+	
+<!-- 	리뷰 파일업로드 -->
+	<insert id="insertFile">
+		<selectKey keyProperty="file_board_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(file_board_idx) FROM file_board
+		</selectKey>
+		INSERT 
+			INTO file_board
+			VALUES (
+					#{file_board_idx} + 1, 
+					#{file1}, 
+					#{file2}, 
+					"N", 
+ 					(SELECT MAX(board_idx) FROM board)
+					)
+	</insert>
+	
+	
+	<!-- 	리뷰 작성시 적립금 -->
+	<insert id="CoinScore">
+		<selectKey keyProperty="coin_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(coin_idx) FROM coin
+		</selectKey>
+		INSERT 
+			INTO coin
+			VALUES (
+					 #{coin_idx} + 1
+					, (select member_idx
+									from member
+                            		where member_id = #{board_id})
+					,"리뷰작성 적립금 1000원"
+					,"1000"
+					,"0"
+					,"0"
+					,(SELECT c.COIN_TOTAL as total
+						 FROM coin c
+							left join member m
+								on c.RF_MEMBER_IDX = m.MEMBER_IDX
+						 WHERE
+							  m.MEMBER_ID = #{board_id}
+                              order by coin_idx desc limit 1)+1000
+					,date_format(now(),'%Y%m%d')
+					)
+	</insert>
+		<!-- 	마이페이지 리뷰 작성시 적립금 -->
+	<insert id="CoinScore_my">
+		<selectKey keyProperty="coin_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(coin_idx) FROM coin
+		</selectKey>
+		INSERT 
+			INTO coin
+			VALUES (
+					 #{coin_idx} + 1
+					, (select member_idx
+									from member
+                            		where member_id = #{member_id})
+					,"리뷰작성 적립금 1000원"
+					,"1000"
+					,"0"
+					,"0"
+					,(SELECT c.COIN_TOTAL as total
+						 FROM coin c
+							left join member m
+								on c.RF_MEMBER_IDX = m.MEMBER_IDX
+						 WHERE
+							  m.MEMBER_ID = #{member_id}
+                              order by coin_idx desc limit 1)+1000
+					,date_format(now(),'%Y%m%d')
+					)
+	</insert>
+	
+	
+	
+	<!-- 	리뷰 상태 변경 방금 -->
+	<update id="reviewStatus">
+
+				
+			UPDATE sell_detail
+			SET
+			     sell_review_status = "Y"
+			WHERE
+					sell_detail_idx = (select sell_detail_idx from
+										(select d.sell_detail_idx
+											from sell_detail d
+												left join sell s
+												on d.RF_SELL_IDX = s.SELL_IDX
+												left join member m
+												on m.MEMBER_IDX= s.RF_MEMBER_IDX
+											where m.MEMBER_IDX=${sIdx}
+												 and d.RF_ITEM_IDX=#{item_idx}
+												 and d.SELL_REVIEW_STATUS = 'N'
+											limit 1)
+									  a)
+				and rf_item_idx = #{item_idx}
+				
+	</update>
+	<!-- 별점 등록 -->
+	<insert id="insertStar">
+		<selectKey keyProperty="board_star_idx" resultType="integer" order="BEFORE">
+			SELECT MAX(board_star_idx) FROM board_star
+		</selectKey>
+		INSERT 
+			INTO board_star
+			VALUES (
+					#{board_star_idx} + 1, 
+					(SELECT MAX(board_idx) FROM board), 
+					#{board_star_score}
+					)
+	</insert>
+		
+		
+	<!-- 리뷰 실제 업로드 파일명 조회1 -->
+	<select id="selectRealFile1" resultType="string">
+		SELECT file1
+			FROM file_board
+			WHERE
+				rf_board_idx = #{board_idx}
+	</select>
+	<!-- 리뷰 실제 업로드 파일명 조회2 -->
+	<select id="selectRealFile2" resultType="string">
+		SELECT file2
+			FROM file_board
+			WHERE
+				rf_board_idx = #{board_idx}
+	</select>
+	
+	
+	<!-- 	리뷰삭제 -->
+	<delete id="deleteReview">
+		DELETE
+			FROM board
+			WHERE 
+				board_idx = #{board_idx}
+	</delete>
+	
+<!-- 	파일삭제 -->
+	<delete id="deleteFile">
+		DELETE
+			FROM file_board
+			WHERE 
+				rf_board_idx = #{board_idx}
+	</delete>
+	
+		<!-- 마이페이지 작성글 목록-->
+	<select id="selectBoardList" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+	
+	     SELECT b.BOARD_IDX
+				,b.BOARD_ITEM_IDX
+				,b.BOARD_TYPE
+				,b.BOARD_ID
+				,b.BOARD_CATEGORY
+				,b.BOARD_SUBJECT
+				,b.BOARD_CONTENT
+				,b.BOARD_READCOUNT
+				,b.BOARD_DATE
+                ,ifnull( r.reply_count,0)as reply_count
+			 FROM board b 
+			 	left join (select reply_bo_ref, count(*) as reply_count
+			 					from reply
+	         					group by reply_bo_ref) r
+					on b.board_idx = r.reply_bo_ref
+			 WHERE board_id = #{member_id} and board_type NOT LIKE '%후기%'
+			 ORDER BY board_idx DESC
+			 LIMIT #{startRow}, #{listLimit}
+		 
+
+	</select>
+	
+	
+<!-- 마이페이지 작성글 갯수 -->
+	<select id="selectItemListCount" resultType="integer">
+		SELECT 
+			COUNT(*) 
+			FROM board
+			 WHERE board_id = #{member_id} and board_type NOT LIKE '%후기%'
+	</select>
+	
+<!-- 	리뷰 상세정보 조회 -->
+	<select id="selectReview" resultType="com.itwillbs.Code_Green.vo.BoardVO">
+		SELECT * 
+			FROM board
+			WHERE
+				board_idx = #{board_idx}
+	</select>
+	
+<!-- 	리뷰 파일 상세정보 조회 -->
+	<select id="selecFile" resultType="com.itwillbs.Code_Green.vo.File_boardVO">
+		SELECT * 
+			FROM file_board
+			WHERE
+				rf_board_idx = #{board_idx}
+	</select>
+	
+	<!-- 리뷰 수정 -->
+	<update id="updateReview">
+		UPDATE board
+			SET
+				board_subject = #{board_subject},
+				board_content = #{board_content}
+			WHERE
+				board_idx = #{board_idx}
+	</update>
+	
+	<!-- 파일 수정 -->
+	<update id="updateFile">
+		UPDATE file_board
+			SET
+			     RF_BOARD_IDX = #{board_idx}
+				 	 ,file1 = #{file1}
+					, file2 = #{file2}
+			WHERE
+				rf_board_idx = #{board_idx}
+	</update>
+	
+<!-- 	마이페이지 리뷰 상태 변경 -->
+	<update id="updateStatus">
+		UPDATE sell_detail
+			SET
+			     sell_review_status = "Y"
+			WHERE
+					rf_sell_idx = #{sell_idx}
+				and rf_item_idx = #{item_idx}
+	</update>
+</mapper>

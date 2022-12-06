@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <link href="apple-touch-icon.png" rel="apple-touch-icon">
+    <link href="favicon.png" rel="icon">
+    <title>Martfury Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="plugins/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="fonts/Linearicons/Font/demo-files/demo.css">
+    <link rel="stylesheet" href="plugins/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="plugins/owl-carousel/assets/owl.carousel.css">
+    <link rel="stylesheet" href="plugins/select2/dist/css/select2.min.css">
+    <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+    <link rel="stylesheet" href="plugins/apexcharts-bundle/dist/apexcharts.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header class="header--mobile">
+        <div class="header__left">
+            <button class="ps-drawer-toggle"><i class="icon icon-menu"></i></button><img src="" alt="">
+        </div>
+        <div class="header__center"><a class="ps-logo" href="#"><img src="img/logo.png" alt=""></a></div>
+        <div class="header__right"><a class="header__site-link" href="#"><i class="icon-exit-right"></i></a></div>
+    </header>
+    <aside class="ps-drawer--mobile">
+        <div class="ps-drawer__header">
+            <h4> Menu</h4>
+            <button class="ps-drawer__close"><i class="icon icon-cross"></i></button>
+        </div>
+        <div class="ps-drawer__content">
+            <ul class="menu">
+                <li><a href="index.html"><i class="icon-home"></i>Dashboard</a></li>
+                <li><a href="products.html"><i class="icon-database"></i>Products</a></li>
+                <li><a href="orders.html"><i class="icon-bag2"></i>Orders</a></li>
+                <li><a href="customers.html"><i class="icon-users2"></i>Customers</a></li>
+                <li><a href="coupons.html"><i class="icon-percent-circle"></i>Coupons</a></li>
+                <li><a href="Categories.html"><i class="icon-papers"></i>Categories</a></li>
+                <li><a href="settings.html"><i class="icon-cog"></i>Settings</a></li>
+            </ul>
+        </div>
+    </aside>
+    <div class="ps-site-overlay"></div>
+    <main class="ps-main">
+        <div class="ps-main__sidebar">
+            <div class="ps-sidebar">
+                <div class="ps-sidebar__top">
+                    <div class="ps-block--user-wellcome">
+                        <div class="ps-block__left"><img src="img/user/admin.jpg" alt="" /></div>
+                        <div class="ps-block__right">
+                            <p>Hello,<a href="#">브랜드 관리자</a></p>
+                        </div>
+                        <div class="ps-block__action"><a href="#"><i class="icon-exit"></i></a></div>
+                    </div>
+                    <div class="ps-block--earning-count"><small>수익</small>
+                        <h3>$12,560.55</h3>
+                    </div>
+                </div>
+                <div class="ps-sidebar__content">
+                    <div class="ps-sidebar__center">
+                        <ul class="menu">
+                            <li><a href="index.html"><i class="icon-home"></i>Dashboard</a></li>
+                            <li><a href="products.html"><i class="icon-database"></i>Products</a></li>
+                            <li><a href="orders.html"><i class="icon-bag2"></i>Orders</a></li>
+                            <li><a href="customers.html"><i class="icon-users2"></i>Customers</a></li>
+                            <li><a href="coupons.html"><i class="icon-percent-circle"></i>Coupons</a></li>
+                            <li><a href="Categories.html"><i class="icon-papers"></i>Categories</a></li>
+                            <li><a href="settings.html"><i class="icon-cog"></i>Settings</a></li>
+                        </ul>
+                    </div>
+                    <div class="ps-sidebar__footer">
+                        <div class="ps-copyright"><img src="img/logo.png" alt="">
+                            <p>&copy;2020 Marfury marketplace. <br/> All rights reversed.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="ps-main__wrapper">
+            <header class="header--dashboard">
+                <div class="header__left">
+                    <h3>Categories</h3>
+                    <p>Martfury Categories</p>
+                </div>
+                <div class="header__center">
+                    <form class="ps-form--search-bar" action="index.html" method="get">
+                        <input class="form-control" type="text" placeholder="Search something" />
+                        <button><i class="icon-magnifier"></i></button>
+                    </form>
+                </div>
+                <div class="header__right"><a class="header__site-link" href="#"><span>View your store</span><i class="icon-exit-right"></i></a></div>
+            </header>
+            <section class="ps-dashboard ps-items-listing">
+                <div class="ps-section__left">
+                    <div class="table-responsive">
+                        <table class="table ps-table">
+                            <thead>
+                                <tr>
+                                    <th>Category name</th>
+                                    <th>Slug</th>
+                                    <th>Created at</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Babies &amp; Moms</strong></td>
+                                    <td>babies-and-moms</td>
+                                    <td>Jul 21, 2020</td>
+                                    <td>
+                                        <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Delete</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Clothing &amp; Apparel</strong></td>
+                                    <td>clothing-and-apparel</td>
+                                    <td>Jul 21, 2020</td>
+                                    <td>
+                                        <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Delete</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Electronic</strong></td>
+                                    <td>clothing-and-apparel</td>
+                                    <td>Jul 21, 2020</td>
+                                    <td>
+                                        <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Delete</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Home Garden &amp; Kitchen</strong></td>
+                                    <td>Home-garden-and-kitchen</td>
+                                    <td>Jul 21, 2020</td>
+                                    <td>
+                                        <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Delete</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Computer &amp; Technologies</strong></td>
+                                    <td>computer-and-technologies</td>
+                                    <td>Jul 21, 2020</td>
+                                    <td>
+                                        <div class="dropdown"><a id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-ellipsis"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><a class="dropdown-item" href="#">Edit</a><a class="dropdown-item" href="#">Delete</a></div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="ps-section__footer">
+                        <p>Show 5 in 30 items.</p>
+                        <ul class="pagination">
+                            <li><a href="#"><i class="icon icon-chevron-left"></i></a></li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#"><i class="icon-chevron-right"></i></a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="ps-section__right">
+                    <form class="ps-form ps-form--new" action="index.html" method="get">
+                        <div class="ps-form__content">
+                            <div class="form-group">
+                                <label>Name<sup>*</sup>
+                                </label>
+                                <input class="form-control" type="text" placeholder="Enter category name" />
+                            </div>
+                            <div class="form-group">
+                                <label>Slug<sup>*</sup>
+                                </label>
+                                <input class="form-control" type="text" placeholder="Enter category slug" />
+                            </div>
+                            <div class="form-group form-group--select">
+                                <label>Parent
+                                </label>
+                                <div class="form-group__content">
+                                    <select class="ps-select" title="Parent">
+                                        <option value="1">Parent 1</option>
+                                        <option value="2">Parent 2</option>
+                                        <option value="3">Parent 3</option>
+                                        <option value="4">Parent 4</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Description
+                                </label>
+                                <textarea class="form-control" rows="6" placeholder="Enter category description"></textarea>
+                            </div>
+                        </div>
+                        <div class="ps-form__bottom">
+                            <button class="ps-btn ps-btn--gray">Reset</button>
+                            <button class="ps-btn ps-btn--sumbit success">Add new</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </main>
+    <script src="plugins/jquery.min.js"></script>
+    <script src="plugins/popper.min.js"></script>
+    <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="plugins/jquery.matchHeight-min.js"></script>
+    <script src="plugins/select2/dist/js/select2.full.min.js"></script>
+    <script src="plugins/summernote/summernote-bs4.min.js"></script>
+    <script src="plugins/apexcharts-bundle/dist/apexcharts.min.js"></script>
+    <!-- custom code-->
+    <script src="js/main.js"></script>
+</body>
+
+</html>

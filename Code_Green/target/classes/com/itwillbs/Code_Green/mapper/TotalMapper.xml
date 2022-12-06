@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.TotalMapper">
+
+
+
+	<select id="selectSellChart" resultType="com.itwillbs.Code_Green.vo.TotalVO">
+		SELECT
+			m.manager_brandname AS manager_brandname,
+			sum((i.item_price * s.sell_amount)) AS brandtotal
+			FROM
+				manager m
+			LEFT JOIN
+				item i 
+			ON
+				m.manager_idx = i.re_manager_idx
+			LEFT JOIN
+				sell_detail s
+			ON
+				i.item_idx = s.rf_item_idx
+			WHERE
+				m.manager_adminauth='Y' AND m.manager_del_yn ='N'
+			GROUP BY
+				i.re_manager_idx
+	</select>
+	
+<!-- 	<select id="selectBrandChart" resultType="com.itwillbs.Code_Green.vo.TotalVO"> -->
+<!-- 		SELECT -->
+<!-- 			m.manager_brandname AS manager_brandname, -->
+<!-- 			DATE_FORMAT(s.sell_pay_date, '%Y.%m.%d') AS days, -->
+<!-- 			sum((i.item_price * sd.sell_amount)) AS dayTotal -->
+<!-- 			FROM -->
+<!-- 				manager m LEFT JOIN item i  -->
+<!-- 			ON -->
+<!-- 				m.manager_idx = i.re_manager_idx -->
+<!-- 			LEFT JOIN -->
+<!-- 				sell_detail sd -->
+<!-- 			ON -->
+<!-- 				i.item_idx = sd.rf_item_idx -->
+<!-- 			LEFT JOIN -->
+<!-- 				sell s -->
+<!-- 			ON -->
+<!-- 				s.sell_idx = sd.RF_SELL_IDX -->
+<!-- 			WHERE -->
+<!-- 				m.manager_id=#{manager_id} AND s.sell_pay_date BETWEEN DATE_SUB(now(), INTERVAL 7 DAY) AND now() -->
+<!-- 			GROUP BY s.sell_pay_date -->
+<!-- 	</select>  -->
+	
+	
+	<select id="selectBrandChart" resultType="com.itwillbs.Code_Green.vo.TotalVO">
+	WITH TMP AS (
+		SELECT m.manager_brandname AS manager_brandname
+			 , DATE_FORMAT(s.sell_pay_date, '%Y.%m.%d') AS days
+			 ,  sum((i.item_price * sd.sell_amount)) AS dayTotal
+		     ,  DATE_FORMAT(sell_date, '%Y%m%d') AS sell_date
+		  FROM manager m LEFT JOIN item i 
+			ON m.manager_idx = i.re_manager_idx
+		  LEFT JOIN sell_detail sd
+			ON i.item_idx = sd.rf_item_idx
+		  LEFT JOIN sell s
+			ON s.sell_idx = sd.RF_SELL_IDX
+		 WHERE m.manager_id= #{manager_id}
+		 GROUP BY s.sell_pay_date
+	)
+		
+		SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-6 DAY), '%Y.%m.%d')) AS days
+		     , IFNULL(max(dayTotal), 0) AS dayTotal
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-6 DAY), '%Y%m%d')
+		 UNION ALL
+		SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-5 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-5 DAY), '%Y%m%d')
+		 UNION ALL
+		 SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-4 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-4 DAY), '%Y%m%d')
+		 UNION ALL
+		 SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-3 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-3 DAY), '%Y%m%d')
+		 UNION ALL
+		 SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-2 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-2 DAY), '%Y%m%d')
+		 UNION ALL
+		 SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-1 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-1 DAY), '%Y%m%d')
+		 UNION ALL
+		 SELECT IFNULL(max(days), DATE_FORMAT(DATE_ADD(now(), INTERVAL-0 DAY), '%Y.%m.%d')), IFNULL(max(dayTotal), 0)
+		  FROM TMP
+		 WHERE sell_date = DATE_FORMAT(DATE_ADD(now(), INTERVAL-0 DAY), '%Y%m%d')
+	</select>
+	
+
+</mapper>

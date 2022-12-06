@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.CartMapper">
+<!-- <selectKey keyProperty="cart_idx" resultType="integer" order="BEFORE"> -->
+<!-- 		SELECT MAX(cart_idx) FROM cart -->
+<!-- </selectKey> -->
+
+   <!--  장바구니 추가 -->
+   <insert id="insertCart">
+            INSERT INTO cart
+            VALUES(
+            IFNULL(
+                       (SELECT MAX(cart_idx) FROM cart c), 0
+                       ) + 1,
+            #{rf_item_idx},
+            #{rf_member_idx},
+            #{cart_amount},
+            #{cart_total}
+            )
+            <!-- 중복시 수량 하나 추가 -->
+            ON DUPLICATE KEY UPDATE  cart_amount= cart_amount + 1 
+   </insert>
+	
+	<!--  장바구니 목록 -->
+	<select id="selectCart" resultType="com.itwillbs.Code_Green.vo.CartVO">
+		SELECT 
+			i.item_name,
+			i.item_price,
+			i.item_category,
+			m.manager_brandname,
+			c.cart_amount,
+			c.cart_total,
+			c.rf_member_idx,
+			c.rf_item_idx,
+			c.cart_idx,
+			r.member_id,
+            f.file1
+		FROM cart c
+		LEFT JOIN item i ON i.item_idx = c.rf_item_idx
+		JOIN manager m ON m.manager_idx = i.re_manager_idx 
+		JOIN member r ON r.member_idx = c.rf_member_idx
+        JOIN file_item f ON f.file_item_idx = i.item_idx
+		WHERE r.member_id = #{member_id};
+	
+	</select>
+	
+	
+	
+	<!-- 장바구니 번호 가져오기 -->
+	<select id="getCartIdx">
+		SELECT
+			c.cart_idx
+				FROM cart c
+					LEFT JOIN member r ON r.member_idx = c.rf_member_idx
+					WHERE r.member_id = #{member_id};
+		
+	</select>
+	
+
+	<!-- 장바구니 삭제 -->
+	<delete id="deleteCart">
+		DELETE FROM cart WHERE cart_idx = #{cart_idx}
+	</delete> 
+	
+	<!-- 장바구니 수정 -->
+	<update id="modifyCart">
+		update cart set cart_amount = #{cart_amount} where cart_idx = #{cart_idx}
+	</update>
+	
+	
+	<!--  장바구니 금액 합계 -->
+	<select id="sumMoney"  resultType="String">
+		SELECT SUM(item_price * cart_amount) total
+		FROM 
+		  cart c, item i
+		WHERE 
+		  c.rf_item_idx = i.item_idx AND c.rf_member_idx = #{member_idx}
+	</select>
+	
+	<!-- 장바구니 수-->
+	<select id="cartCount" resultType="integer">
+		select 
+			count(cart_idx) 
+				from cart
+				where rf_member_idx = #{member_idx}
+	
+	</select>
+	
+	<!-- 장바구니 중복확인 -->
+	<select id="sameItem" resultType="integer">
+		select 
+			count(rf_item_idx) 
+				from cart
+				where rf_member_idx = #{member_idx}
+	
+	</select>
+	
+	<!-- 장바구니 수 -->
+	<select id="getCartCount" resultType="integer">
+		SELECT count(cart_idx)
+			 FROM cart c
+			    LEFT JOIN member m
+			    ON c.rf_member_idx = m.member_idx
+			 WHERE m.member_idx = #{member_idx};
+	</select>
+	
+	<!-- 장바구니 수정 -->
+	<update id="updateCart">
+		UPDATE cart SET cart_amount = #{cart_amount} where cart_idx = #{cart_idx} 
+	<!-- UPDATE tbl_cart	SET amount = amount + #{amount}  -->
+	<!-- WHERE user_id= #{userId} AND product_id = #{productId} -->
+	</update>
+	
+	
+	<!-- 주문 후 장바구니 내 상품 삭제 -->
+	<delete id="afterOrderDeleteCart">
+		DELETE FROM cart WHERE rf_member_idx = #{member_idx};
+	</delete>
+	
+	
+	
+	
+	
+	
+</mapper>

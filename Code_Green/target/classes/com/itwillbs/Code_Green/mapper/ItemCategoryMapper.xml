@@ -1,0 +1,1295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.itwillbs.Code_Green.mapper.ItemCategoryMapper">
+
+	<!-- 전체 상품 카테고리 -->
+	<!-- 카테고리 정렬 기본값 신상품순이라서 order by item_date desc -->
+	<select id="select_all" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+            WHERE 1=1   		    
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			  AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			  AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+           	   AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+
+	<!-- 유제품/음료 카테고리 -->
+	<select id="select_dairy_drink" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category,  
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '유제품/음료' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+			
+	</select>
+		
+	<!-- 해산물 카테고리 -->
+	<select id="select_fish" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+		SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category,  
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '해산물' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+           	   AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+
+	</select>
+	
+	<!-- 과일/채소 카테고리 -->
+	<select id="select_fruit_vegi" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category,  
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '과일/채소' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	
+	</select>
+
+	<!-- 냉동/간편식품 카테고리 -->
+	<select id="select_iced_easy" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category,  
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '냉동/간편식품' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	
+	</select>
+
+	<!-- 특가 상품 카테고리 -->
+	<!-- 5000원 이하 상품(5000원까지) -->
+	<select id="select_sale" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date,
+							   i.item_category,  
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_price &lt; 5000
+               AND i.item_stock not in ("0")
+           	   AND m.manager_del_yn not in ("Y")                                                         
+		  ORDER BY i.item_date DESC) AS c
+		  
+	</select>
+	
+	<!-- 간식류 카테고리 -->
+	<select id="select_snack" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   i.item_category, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '간식류' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY i.item_date DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+             
+	</select>
+	
+	
+	
+	
+	<!-- 전체 게시물 목록 갯수 조회(전체 상품) -->
+	<select id="selectAllListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   WHERE i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   WHERE m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  			 AND i.item_stock not in ("0")
+        		 AND m.manager_del_yn not in ("Y")    
+	</select>
+	
+	<!-- 전체 게시물 목록 갯수 조회(유제품/음료) -->
+	<select id="selectDairyDrinkListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		WHERE i.item_category = "유제품/음료"
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")    
+	</select>
+	
+	<!-- 전체 게시물 목록 갯수 조회(해산물) -->
+	<select id="selectFishListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		WHERE item_category = "해산물"
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")    
+	</select>
+
+	<!-- 전체 게시물 목록 갯수 조회(과일/채소) -->
+	<select id="selectFruitVegiListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		WHERE item_category = "과일/채소"
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")    
+	</select>
+
+	<!-- 전체 게시물 목록 갯수 조회(냉동/간편식품) -->
+	<select id="selectIcedEasyListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		WHERE item_category = "냉동/간편식품"
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")    
+	</select>
+
+	<!-- 전체 게시물 목록 갯수 조회(간식류) -->
+	<select id="selectSnackListCount" resultType="integer">
+		SELECT 
+		COUNT(*) 
+		FROM item i 
+		LEFT JOIN manager m
+		ON i.re_manager_idx = m.manager_idx
+		WHERE item_category = "간식류"
+		<if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		  AND i.item_stock not in ("0")
+              AND m.manager_del_yn not in ("Y")    
+	</select>
+	
+	
+	
+	
+	
+	
+	<!-- 낮은 가격순(전체 상품) -->
+	<select id="selectCheapAllList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			  WHERE i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			  WHERE m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 높은 가격순(전체 상품) -->
+	<select id="selectExpensiveAllList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			  WHERE i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			  WHERE m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  			AND i.item_stock not in ("0")
+            	AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 낮은 가격순(유제품/음료) -->
+	<select id="selectCheapDairyDrinkList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '유제품/음료' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if> 
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                         
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 높은 가격순(유제품/음료) -->
+	<select id="selectExpensiveDairyDrinkList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '유제품/음료' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 낮은 가격순(해산물) -->
+	<select id="selectCheapFishList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '해산물' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>	
+	
+	<!-- 높은 가격순(해산물) -->
+	<select id="selectExpensiveFishList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '해산물' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>	
+	
+	<!-- 낮은 가격순(과일/채소) -->
+	<select id="selectCheapFruitVegiList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '과일/채소' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>	
+		
+	<!-- 높은 가격순(과일/채소) -->
+	<select id="selectExpensiveFruitVegiList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '과일/채소' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 낮은 가격순(냉동/간편식품) -->
+	<select id="selectCheapIcedEasyList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '냉동/간편식품' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 높은 가격순(냉동/간편식품) -->
+	<select id="selectExpensiveIcedEasyList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '냉동/간편식품' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		  AND i.item_stock not in ("0")
+              AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 낮은 가격순(간식류) -->
+	<select id="selectCheapSnackList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '간식류' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED)) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 높은 가격순(간식류) -->
+	<select id="selectExpensiveSnackList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx
+							      	   , AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+						 	    GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+             WHERE i.item_category = '간식류' 
+       <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                                          
+		  ORDER BY CAST(i.item_price AS UNSIGNED) DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>		
+	
+	
+	<!-- 후기 많은순(전체 상품) -->
+	<select id="selectReviewAllList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'                
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+  <if test="!keyword.equals('')">                         
+	<choose>                                            
+		<when test="searchType.equals('item_name')">     
+		 	 WHERE i.item_name LIKE '%${keyword}%'            
+		</when>                                        
+		<when test="searchType.equals('brand_name')">     
+		 	 WHERE m.manager_brandname LIKE '%${keyword}%'  
+		</when>                                          
+	</choose>                                            
+  </if> 
+  			   AND i.item_stock not in ("0")
+           	   AND m.manager_del_yn not in ("Y")                                     
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 후기 많은순(유제품/음료) -->
+	<select id="selectReviewDairyDrinkList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'  
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+	          WHERE i.item_category = '유제품/음료'
+	  <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")                                      
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 후기 많은순(해산물) -->
+	<select id="selectReviewFishList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'  
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+	         WHERE i.item_category = '해산물'
+	         <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")    
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 후기 많은순(과일/채소) -->
+	<select id="selectReviewFruitVegiList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'  
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+	         WHERE i.item_category = '과일/채소'
+	         <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")     
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 후기 많은순(냉동/간편식품) -->
+	<select id="selectReviewIcedEasyList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'  
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+	         WHERE i.item_category = '냉동/간편식품'
+	         <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")     
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+	
+	<!-- 후기 많은순(간식류) -->
+	<select id="selectReviewSnackList" resultType="com.itwillbs.Code_Green.vo.ItemVO">
+			SELECT * 
+			        FROM
+					    (SELECT
+					           i.item_idx, 
+							   i.item_name,
+							   i.item_price,
+							   i.item_sale, 
+							   i.item_date, 
+							   f.file1,
+							   m.manager_brandname,
+							   ifnull( round(truncate( a.board_star_score,1),0),0) AS score,
+				  			   ifnull( truncate( a.board_star_score,1),0) AS board_star_score,
+							   a.board_review
+						  FROM item i 
+            		 LEFT JOIN file_item f 
+              				ON i.item_idx = f.rf_item_idx 
+			 			  JOIN manager m 
+               				ON i.re_manager_idx =  m.manager_idx
+            		 LEFT JOIN (
+            		 			  SELECT 
+            		 				     b.board_item_idx,
+                                         count(b.board_item_idx) AS board_review,
+                                         AVG(s.board_star_score) AS board_star_score
+						  		    FROM board b 
+						  		                 JOIN board_star s 
+						                           ON b.board_idx = s.rf_board_idx
+                                    WHERE b.board_type = '후기'  
+						 	     GROUP BY b.board_item_idx) AS a 
+                		    ON i.item_idx = a.board_item_idx
+	         WHERE i.item_category = '간식류'
+	         <if test="!keyword.equals('')">                         
+		<choose>                                            
+			<when test="searchType.equals('item_name')">     
+			   AND i.item_name LIKE '%${keyword}%'            
+			</when>                                        
+			<when test="searchType.equals('brand_name')">     
+			   AND m.manager_brandname LIKE '%${keyword}%'  
+			</when>                                          
+		</choose>                                            
+	  </if>
+	  		   AND i.item_stock not in ("0")
+               AND m.manager_del_yn not in ("Y")     
+	      GROUP BY a.board_item_idx                                                         
+		  ORDER BY a.board_review DESC) AS c
+             LIMIT #{startRow}, #{listLimit}
+	</select>
+		
+</mapper>
