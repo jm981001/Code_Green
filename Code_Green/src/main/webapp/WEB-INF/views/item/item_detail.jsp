@@ -75,15 +75,17 @@
     }  
     
     .heart_icon_brand_m {
-		width: 30px;
-	    height: 30px;
+		width: 36px;
+    	height: 43px;
+    	padding: 3px 0 5px 0;
 	    top: 19px;
 	    left: 233px;
 	}
 
 	.heart_icon_brand_b {
 		width: 30px;
-	    height: 30px;
+   		height: 40px;
+    	padding: 0 0 10px 0;
 	    top: 19px;
 	    left: 233px;
 	}
