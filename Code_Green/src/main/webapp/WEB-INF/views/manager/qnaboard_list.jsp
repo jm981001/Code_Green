@@ -52,7 +52,7 @@
                 <div class="header__right"><a class="header__site-link" href="/Code_Green"><span>메인페이지로 이동</span><i class="icon-exit-right"onclick="href=/Code_Green"></i></a></div>
             </header>
             <section class="ps-items-listing">
-                    <div class="ps-section__actions"><a class="ps-btn success" href="review_board_manage"><i class="icon icon-plus mr-2"></i>답변관리</a></div>
+<!--                     <div class="ps-section__actions"><a class="ps-btn success" href="review_board_manage"><i class="icon icon-plus mr-2"></i>답변관리</a></div> -->
                 <div class="ps-section__header simple">
                     <div class="ps-section__filter">
                         <form class="ps-form--filter" action="qnaboard_list" method="get">

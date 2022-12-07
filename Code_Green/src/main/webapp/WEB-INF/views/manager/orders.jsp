@@ -61,7 +61,7 @@
             </header>
             <section class="ps-items-listing">
             
-                <div class="ps-section__actions"><a class="ps-btn success" href="order_detail"><i class="icon icon-plus mr-2"></i>주문관리</a><a class="ps-btn ps-btn--gray" href="order_detail"><i class="icon icon-download2 mr-2"></i>주문상세조회</a></div>
+<!--                 <div class="ps-section__actions"><a class="ps-btn success" href="order_detail"><i class="icon icon-plus mr-2"></i>주문관리</a><a class="ps-btn ps-btn--gray" href="order_detail"><i class="icon icon-download2 mr-2"></i>주문상세조회</a></div> -->
                 
                 <div class="ps-section__header">
               
