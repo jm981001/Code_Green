@@ -109,7 +109,7 @@
                 </ul>
             </div>
         </div>
-         <div class="col-lg-8" style="margin: 150px 200px;">
+         <div class="col-lg-8" style="margin: 150px 350px;">
          	<div class="ps-block--payment-success"> 
                     <h3>주문이 완료 되었습니다 !</h3>
                     <p>베지터틀을 이용해 주셔서 감사합니다. <br>자세한 주문 내역을 확인하시려면<a href="myBuyList.my"> 마이 페이지</a>에서 확인 하실 수 있습니다.</p><br>
