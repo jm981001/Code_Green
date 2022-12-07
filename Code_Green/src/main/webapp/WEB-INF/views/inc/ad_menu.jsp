@@ -28,7 +28,7 @@ function logout() {
                         </div>
                         <div class="ps-block__action"><a href="javascript:logout()"><i class="icon-exit"></i></a></div>
                     </div>
-                    <div class="ps-block--earning-count"><small>총매출</small>
+                    <div class="ps-block--earning-count"><small>수익</small>
                         <h3><fmt:formatNumber value="${sessionScope.total }" pattern="#,###원"/></h3>
                     </div>
                 </div>
