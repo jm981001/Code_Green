@@ -127,12 +127,12 @@
                                         <div class="form-group">
                                             <label>상품명<sup>*</sup>
                                             </label>
-                                            <input class="form-control" type="text" name="item_name"placeholder="상품번호를 기재해주세요" />
+                                            <input class="form-control" type="text" name="item_name"placeholder="상품명을 기재해주세요" />
                                         </div>
                                         <div class="form-group">
-                                            <label>정상가격<sup>*</sup>
+                                            <label>상품가격<sup>*</sup>
                                             </label>
-                                            <input class="form-control" type="text" name="item_price"placeholder="정상가를 입력해주세요" />
+                                            <input class="form-control" type="text" name="item_price"placeholder="가격을 입력해주세요" />
                                         </div>
 									
  										<div class="form-group">
@@ -198,8 +198,7 @@
                                     <div class="ps-block__content">
                                       
                                         <div class="form-group form-group--select">
-                                            <label>재고상태
-                                            </label>
+                                            <label>재고상태<sup>*</sup></label>
                                             <div class="form-group__content">
                                             
                                                 <select class="ps-select" onchange="changeStatus(this.value)">
@@ -207,7 +206,6 @@
                                                     <option value="재입고">재입고</option>
                                                     <option value="품절">품절</option>
                                                     <option value="판매중">판매중</option>
-<!--                                                     <option value="판매중지">판매중지</option> -->
                                                 </select>
                                             </div>
                                         </div>
@@ -238,7 +236,6 @@
     <script src="/Code_Green/resources/plugins_manager/select2/dist/js/select2.full.min.js"></script>
     <script src="/Code_Green/resources/plugins_manager/summernote/summernote-bs4.min.js"></script>
     <script src="/Code_Green/resources/plugins_manager/apexcharts-bundle/dist/apexcharts.min.js"></script>
-    <!-- custom c/Code_Green/resourcese-->
     <script src="/Code_Green/resources/js/main_manager.js"></script>
 </body>
 

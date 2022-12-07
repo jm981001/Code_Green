@@ -191,19 +191,19 @@
             <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
                <choose>
                <when test="searchType.equals('item_name')">
-               WHERE i.item_name LIKE '%${keyword}%'
+               AND i.item_name LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_category')">
-               WHERE i.item_category LIKE '%${keyword}%'
+               AND i.item_category LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_packing')">
-               WHERE i.item_packing LIKE '%${keyword}%'
+               AND i.item_packing LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_stock')">
-               WHERE i.item_stock LIKE '%${keyword}%'
+               AND i.item_stock LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('brand_name')">
-               WHERE m.manager_brandname LIKE '%${keyword}%' 
+               AND m.manager_brandname LIKE '%${keyword}%' 
                </when>
             </choose>
    </if>
@@ -620,19 +620,19 @@
             <!-- 2. 검색타입(search)에 따른 WHERE 변경 -->
                <choose>
                <when test="searchType.equals('item_name')">
-               WHERE i.item_name LIKE '%${keyword}%'
+               AND i.item_name LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_category')">
-               WHERE i.item_category LIKE '%${keyword}%'
+               AND i.item_category LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_packing')">
-               WHERE i.item_packing LIKE '%${keyword}%'
+               AND i.item_packing LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('item_stock')">
-               WHERE i.item_stock LIKE '%${keyword}%'
+               AND i.item_stock LIKE '%${keyword}%'
                </when>
                <when test="searchType.equals('brand_name')">
-               WHERE m.manager_brandname LIKE '%${keyword}%' 
+               AND m.manager_brandname LIKE '%${keyword}%' 
                </when>
             </choose>
    </if>
