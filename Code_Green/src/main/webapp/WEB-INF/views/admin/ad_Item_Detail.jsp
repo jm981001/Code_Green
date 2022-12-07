@@ -87,10 +87,6 @@
                     <p>Board Manager</p>
                 </div>
                 <div class="header__center">
-<!--                     <form class="ps-form--search-bar" action="index.html" method="get"> -->
-<!--                         <input class="form-control" type="text" placeholder="Search something" /> -->
-<!--                         <button><i class="icon-magnifier"></i></button> -->
-<!--                     </form> -->
                 </div>
                 <div class="header__right"><a class="header__site-link" href="main"><span>메인페이지로 돌아가기</span><i class="icon-exit-right"></i></a></div>
             </header>
@@ -103,10 +99,8 @@
                 <div class="ps-section__content">
                     <div class="table-responsive">
 
-
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-
 
 				 <div style="margin-left: 800px" ></div>                   
 			 <table class="table table-bordered" style="text-align: center;">

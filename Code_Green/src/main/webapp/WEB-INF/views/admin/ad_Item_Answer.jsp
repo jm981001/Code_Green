@@ -83,16 +83,11 @@
                             </div>
                         </form>
                     </div>
-<!--                     <div class="ps-section__actions"><a class="ps-btn success" href="#"><i class="icon icon-plus mr-2"></i>Add Customer</a></div> -->
                 </div>
                 <div class="ps-section__content">
                     <div class="table-responsive">
 
-
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-<!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-
-
                     
                         <table class="table ps-table" style="text-align: center;">
                             <thead>
