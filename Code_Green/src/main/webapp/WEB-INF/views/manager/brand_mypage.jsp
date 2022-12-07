@@ -70,7 +70,6 @@
                             <h4>${brandInfo.manager_id }님의 페이지</h4>
 						<!-- 탈퇴버튼 -->
                              <button class="ps-btn success" type="button"id="submitBtn"onclick="confirmDelete('${brandInfo.manager_id}')">탈퇴하기</button>
-
                             <hr>
                             <br>
                                  <div class="card" style="width: 18rem;">

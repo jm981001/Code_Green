@@ -56,7 +56,6 @@
                     <section class="ps-card">
                         <div class="ps-card__header">
                             <h4>${brandInfo.manager_id }님의 페이지</h4>
-                            
                             <hr>
                             <br>
                           <div class="card" style="width: 25rem;">

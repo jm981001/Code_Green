@@ -79,7 +79,6 @@
             <section class="ps-items-listing">
    
                  <div class="ps-section__actions"><a class="ps-btn success" href="product_register?manager_id=${sessionScope.sId}"><i class="icon icon-plus mr-2"></i>새 상품 등록</a></div>
-                
                 <div class="ps-section__header">
                     <div class="ps-section__filter">
                         <form class="ps-form--filter" action="products" method="get">

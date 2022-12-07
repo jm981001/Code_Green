@@ -65,7 +65,6 @@
 
        <div class="ps-main__wrapper">
         <div class="header__center">
-<%--         <form class="ps-form--search-bar" action="qnaboard_answer?qna_idx="${QnaInfo.qna_idx }" method="get"name="answerForm"> --%>
               <input type="hidden" id="qna_idx" name="qna_idx" value="${QnaInfo.qna_idx }">
                  <input type="hidden" id="qna_id" name="qna_id" value="${QnaInfo.qna_id }">
 
@@ -99,7 +98,6 @@
                                  </tr>   
                     </tbody>
                     </table>
-<!--                     </form> -->
                </div>
                </div>                                    
       <form class="ps-form--review" action="qnaboard_answer_detailPro" method="post" name="modifyForm">
