@@ -65,7 +65,7 @@
             <div class="container">
                 <ul class="breadcrumb">
                     <li><a href="/Code_Green">Home</a></li>
-                    <li><a href="community_main">커뮤니티</a></li>
+                    <li><a href="CommunityList.bo">커뮤니티</a></li>
                 </ul>
             </div>
         </div>
