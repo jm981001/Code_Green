@@ -46,7 +46,7 @@
 						AND board_content LIKE '%${keyword}%' 
 					</when>
 					<when test="searchType.equals('subject_content')">
-						AND board_subject LIKE '%${keyword}%' OR board_content LIKE '%${keyword}%'
+						AND (board_subject LIKE '%${keyword}%' OR board_content LIKE '%${keyword}%')
 					</when>
 				</choose>
 			</if>
@@ -101,7 +101,7 @@
 						AND board_content LIKE '%${keyword}%' 
 					</when>
 					<when test="searchType.equals('subject_content')">
-						AND board_subject LIKE '%${keyword}%' OR board_content LIKE '%${keyword}%'
+						AND (board_subject LIKE '%${keyword}%' OR board_content LIKE '%${keyword}%')
 					</when>
 				</choose>
 			</if>

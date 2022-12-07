@@ -325,7 +325,7 @@ public class CommunityController {
 			return "member/fail_back3";
 		}
 		
-		return "redirect:/CommunityDetail.bo?board_idx=" + board.getBoard_idx() + "&pageNum=" + pageNum;
+		return "redirect:/CommunityDetail.bo?board_idx=" + board.getBoard_idx()+ "&board_id=" + board.getBoard_id();
 	}
 	
 	//------------ 커뮤니티 글 삭제 페이지------------------------------------------- 
