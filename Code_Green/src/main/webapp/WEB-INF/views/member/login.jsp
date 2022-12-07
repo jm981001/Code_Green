@@ -5,7 +5,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
 	String clientId = "ilgdXbcRH89unvY3t9Dz";//애플리케이션 클라이언트 아이디값";
-	String redirectURI = URLEncoder.encode("http://localhost:8081/Code_Green/member/callback", "UTF-8");
+	String redirectURI = URLEncoder.encode("http://192.168.3.128:8081/Code_Green/member/callback", "UTF-8");
 	SecureRandom random = new SecureRandom();
 	//String state = new BigInteger(130, random).toString();
 	String state = session.getAttribute("oauth_state").toString();
