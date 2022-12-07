@@ -72,7 +72,7 @@
            }, function (rsp) { // callback
                if (rsp.success) {
                    alert("결제가 완료되었습니다.");
-                   location.href = "payment_success_card_thanks?member_id=${sessionScope.sId}";
+                   location.href = "payment_success_card_thanks";
                    $.ajax({
                           url: "payment_success_card",
                           type: "POST",

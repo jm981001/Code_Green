@@ -90,7 +90,7 @@
 					},
 					success : function(data) {
 						alert("주문이 완료되었습니다.");
-						location.href = "payment_success_cardPayForm?member_id=${sessionScope.sId}"; 
+						location.href = "payment_success_cardPayForm"; 
 					},
 					fail : function(data2) {
 						alert("주문이 실패되었습니다. 다시 시도해 주세요.");
@@ -112,7 +112,7 @@
 					},
 					success : function(data) {
 						alert("주문이 완료되었습니다.");
-						location.href = "payment_success_card_thanks?member_id=${sessionScope.sId}"; 
+						location.href = "payment_success_card_thanks"; 
 					},
 					fail : function(data2) {
 						alert("주문이 실패되었습니다. 다시 시도해 주세요.");
