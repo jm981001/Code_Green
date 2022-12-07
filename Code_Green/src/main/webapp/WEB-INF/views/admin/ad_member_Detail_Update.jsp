@@ -26,10 +26,7 @@
     <link rel="stylesheet" href="/Code_Green/resources/plugins_admin/apexcharts-bundle/dist/apexcharts.css">
     <link rel="stylesheet" href="/Code_Green/resources/css/style_manager.css">
     
-    
-    
     <style>
-
 
     .input-form {
       max-width: 680px;
@@ -49,8 +46,7 @@
 
 <script type="text/javascript">
 	function back() {
-		// confirm() 함수를 사용하여 "삭제하시겠습니까?" 메세지로 확인받아 result 변수에 저장 후
-		// result 변수값이 true 일 경우 MemberDelete.me 서블릿 주소 요청(파라미터로 id 전달)
+		
 		history.back();
 	}
 </script>    
@@ -84,8 +80,6 @@
                 <div class="ps-section__content">
                     <div class="table-responsive">
                         <table class="table ps-table">
-
-         
                            
 <!--  회원상세정보 조회		회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회-->                           
 <!--  회원상세정보 조회		회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회-->
@@ -115,8 +109,6 @@
 			              <label for="name">비밀번호</label>
 			              <input type="text" class="form-control" id="passwd" placeholder="접근이 불가합니다" readonly="readonly">
 			            </div>
-			            
-			            
 			          
 			            <div class="col-md-6 mb-3">
 			              <label for="name">전화번호</label>
@@ -132,10 +124,6 @@
 			            <label for="address">주소</label>
 			            <input type="text" class="form-control" id="address" value="${member.member_postcode }" readonly="readonly">
 			          </div>
-			
-<!-- 			      		 <button class="btn btn-primary btn-lg btn-block" type="button">주소 검색(이건 수정시에 근데 이것도 수정하남?)</button> -->
-<!-- 						<div><input type="button" class="btn btn-primary btn-lg btn-block" value="와랄라" ></div> -->
-						
 						
 			          <div class="mb-3">
 			            <label for="address2">상세주소<span class="text-muted">&nbsp;</span></label>
@@ -150,6 +138,7 @@
 			        </form>
 			      </div>
 			    </div>
+			   
 			    <footer class="my-3 text-center text-small">
 			      <p class="mb-1">&copy; 2021 YD</p>
 			    </footer>
@@ -157,23 +146,9 @@
 			  
 <!--  회원상세정보 조회		회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회-->
 <!--  회원상세정보 조회		회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회	회원상세정보 조회-->
-  
-                                  
-                                   
-<!--                             </tbody> -->
                         </table>
                     </div>
                 </div>
-<!--                 <div class="ps-section__footer"> -->
-<!--                     <p>Show 10 in 30 items.</p> -->
-<!--                     <ul class="pagination"> -->
-<!--                         <li><a href="#"><i class="icon icon-chevron-left"></i></a></li> -->
-<!--                         <li class="active"><a href="#">1</a></li> -->
-<!--                         <li><a href="#">2</a></li> -->
-<!--                         <li><a href="#">3</a></li> -->
-<!--                         <li><a href="#"><i class="icon-chevron-right"></i></a></li> -->
-<!--                     </ul> -->
-<!--                 </div> -->
             </section>
         </div>
     </main>

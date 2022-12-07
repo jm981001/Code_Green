@@ -61,10 +61,6 @@
                     <p>Board Detail</p>
                 </div>
                 <div class="header__center">
-<!--                     <form class="ps-form--search-bar" action="index.html" method="get"> -->
-<!--                         <input class="form-control" type="text" placeholder="Search something" /> -->
-<!--                         <button><i class="icon-magnifier"></i></button> -->
-<!--                     </form> -->
                 </div>
                 <div class="header__right"><a class="header__site-link" href="ad_Board_Review"><span>목록으로 돌아가기</span><i class="icon-exit-right"></i></a></div>
             </header>
@@ -77,10 +73,7 @@
                 <div class="ps-section__content">
                     <div class="table-responsive">
 
-
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-<!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-
 
 				 <div style="margin-left: 800px" ></div>                   
 			 <table class="table table-bordered" style="text-align: center;">
@@ -108,15 +101,14 @@
 				    	<td scope="row" rowspan="2">내용</td>
 				    </tr>
 				    <tr>
-				    	<td colspan="4">${reviewDetail.board_content } ${reviewDetail.file1 }</td>
+				    	<td colspan="4">${reviewDetail.board_content }
+				    	<img alt="" src="/Code_Green/resources/commUpload/${reviewDetail.file1 }">
+				    	<img alt="" src="/Code_Green/resources/commUpload/${reviewDetail.file2 }">
+				    	<img alt="" src="/Code_Green/resources/commUpload/${reviewDetail.file3 }">
+				    	</td>
 				    </tr>
 				  </tbody>
 				</table>
-                     
-                     
-                    
-                       
-                       
                     </div>
                 </div>
                 

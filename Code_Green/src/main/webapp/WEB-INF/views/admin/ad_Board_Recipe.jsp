@@ -60,10 +60,6 @@
                     <p>Board Manager</p>
                 </div>
                 <div class="header__center">
-<!--                     <form class="ps-form--search-bar" action="index.html" method="get"> -->
-<!--                         <input class="form-control" type="text" placeholder="Search something" /> -->
-<!--                         <button><i class="icon-magnifier"></i></button> -->
-<!--                     </form> -->
                 </div>
                 <div class="header__right"><a class="header__site-link" href="main"><span>메인페이지로 돌아가기</span><i class="icon-exit-right"></i></a></div>
             </header>
@@ -90,15 +86,12 @@
                             </div>
                         </form>
                     </div>
-<!--                     <div class="ps-section__actions"><a class="ps-btn success" href="#"><i class="icon icon-plus mr-2"></i>Add Customer</a></div> -->
                 </div>
                 <div class="ps-section__content">
                     <div class="table-responsive">
 
-
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
 <!--   <tbody>  가운데 정렬 넣음   <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음  <tbody>  가운데 정렬 넣음-->
-
 
                     
                         <table class="table ps-table" style="text-align: center;">
@@ -106,7 +99,7 @@
                                 <tr>
                                 	<th>게시판</th>
                                     <th>제목</th>
-                                    <th>작성자(아이디)</th>
+                                    <th>기업명</th>
                                     <th>작성일</th>
                                     <th>조회수</th>
                                     <th></th>
@@ -129,11 +122,6 @@
                                     </td>
                                 </tr>
                                </c:forEach>
-                               
-<!-- 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 -->
-<!-- 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 -->
-<!-- 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 페이징 처리 해야합니더 -->
-                               
                             </tbody>
                         </table>
                     </div>
