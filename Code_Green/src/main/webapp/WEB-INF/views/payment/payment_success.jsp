@@ -36,7 +36,7 @@
    	<style type="text/css">
    		
    		#cardOrderBtn{
-   			width: 870px;
+   			width: 1250px;
    			margin-top: 100px;
    		}
    		
