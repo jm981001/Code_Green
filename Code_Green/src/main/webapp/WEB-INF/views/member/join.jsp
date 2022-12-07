@@ -98,16 +98,12 @@
 				<div class="form-group email-form">
 					<label for="email">이메일</label>
 					<div class="input-group">
-						<input type="text" class="form-control" name="member_email" id="member_email" placeholder="이메일" style="height: 43px; background-color: white;">
+						<input type="text" class="form-control" name="member_email" id="member_email" placeholder="이메일" style="height: 43px; background-color: white;" onkeyup="checkEmail(this.value)">
 						<input type="button" onclick="dupMail()" value="중복체크" style="width: 80px">
-<!-- 						<select class="form-control" name="userEmail2" id="userEmail2"> -->
-<!-- 							<option>@naver.com</option> -->
-<!-- 							<option>@daum.net</option> -->
-<!-- 							<option>@gmail.com</option> -->
-<!-- 							<option>@hanmail.com</option> -->
-<!-- 							<option>@yahoo.co.kr</option> -->
-<!-- 						</select> -->
 					</div>
+							<span class="placehold-text">
+								<span id="checkEmailResult"><!-- 자바스크립트에 의해 메세지가 표시될 공간 --></span>
+							</span>
 						<span class="placehold-text">
 							<span id="checkMailResult"><!-- 자바스크립트에 의해 메세지가 표시될 공간 --></span>
 						</span>
@@ -189,15 +185,8 @@
 				<div class="form-group email-form" style="width:300px;">
 					<label for="email">이메일</label>
 					<div class="input-group">
-						<input type="text" class="form-control" name="manager_email" id="manager_email" placeholder="이메일" style="width:300px; height: 43px; background-color: white;">
+						<input type="text" class="form-control" name="manager_email" id="manager_email" placeholder="이메일" style="width:300px; height: 43px; background-color: white;"onkeyup="checkEmailM(this.value)" >
 						<input type="button" onclick="dupMailM()" value="중복체크" style="width: 80px; position: absolute; margin: 0px 300px;">
-<!-- 						<select class="form-control" name="userEmail4" id="userEmail4"> -->
-<!-- 							<option>@naver.com</option> -->
-<!-- 							<option>@daum.net</option> -->
-<!-- 							<option>@gmail.com</option> -->
-<!-- 							<option>@hanmail.com</option> -->
-<!-- 							<option>@yahoo.co.kr</option> -->
-<!-- 						</select> -->
 					</div>
 						<span class="placehold-text">
 							<span id="checkMailResultM"><!-- 자바스크립트에 의해 메세지가 표시될 공간 --></span>

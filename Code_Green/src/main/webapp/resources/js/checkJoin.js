@@ -30,9 +30,9 @@ $(document).ready(function(){
 			type : 'get',
 			url : 'mailCheck?email='+eamil,
 			success : function (data) {
-				console.log("data : " +  data);
+//				console.log("data : " +  data);
 				checkInput.attr('disabled',false);
-				code =data;
+//				code =data;
 				alert('인증번호가 전송되었습니다.')
 			}			
 		});
@@ -70,9 +70,9 @@ $(document).ready(function(){
 			type : 'get',
 			url : 'mailCheck?email='+eamil,
 			success : function (data) {
-				console.log("data : " +  data);
+//				console.log("data : " +  data);
 				checkInput.attr('disabled',false);
-				code =data;
+//				code =data;
 				alert('인증번호가 전송되었습니다.')
 			}			
 		});
@@ -107,7 +107,8 @@ $(document).ready(function(){
 // member 정규식-----------------------------------------------------------------------------------
 	var checkNameResult = false, checkIdResult = false, checkPasswdResult = false;
 	var checkNameResultM = false, checkIdResultM = false, checkPasswdResultM = false;
-	var dupIdResult = false; var dupIdResultM = false; dupMailResultM = false; dupMailResult = false;
+	var dupIdResult = false; var dupIdResultM = false; var dupMailResultM = false; var dupMailResult = false;
+	var checkEmailResult = false; var checkEmailResultM = false;
 
 	function checkId(id) {
 		let regex = /^[a-z]+[a-z0-9]{5,19}$/g;
@@ -121,10 +122,25 @@ $(document).ready(function(){
 			checkIdResult = true;
 		}
 		
-		
+	}checkEmail//
+	
+//	이메일 유효성
+	function checkEmail(email) {
+		let regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+		if(!regex.exec(email)) {
+			$("#checkEmailResult").html("양식을 맞춰주세요");
+			$("#checkEmailResult").css("color", "red");
+			checkEmailResult = false;
+		} else {
+			$("#checkEmailResult").html("사용 가능합니다");
+			$("#checkEmailResult").css("color", "#c26607");
+			checkEmailResult = true;
+		}
 		
 	}
-
+	
+	
+	//이름 유효성
 	function checkName(name) {
 		let regex = /^[가-힣]{1,10}$/; //2,10
 		if(!regex.exec(name)) {
@@ -138,6 +154,7 @@ $(document).ready(function(){
 			checkNameResult = true;
 		}
 	}
+//	패스워드 유효성
 	function checkPasswd(pass) {
 		let regex = /^[A-Za-z0-9!@#$%^&*]{8,20}$/;
 		if(!regex.exec(pass)) {
@@ -231,7 +248,11 @@ $(document).ready(function(){
 			alert("이메일 중복을 확인하여 주세요");
 			$("#member_email").select();
 			return false; // 현재 폼의 submit 동작을 중단하기 위해 false 리턴
-		}
+		} else if(!checkEmailResult) {
+			alert("이메일 양식을 확인하여 주세요");
+			$("#member_email").select();
+			return false; // 현재 폼의 submit 동작을 중단하기 위해 false 리턴
+		} 
 		
 		
 		
@@ -241,6 +262,7 @@ $(document).ready(function(){
 	
 	
 // manager 정규식-----------------------------------------------------------------------------------		
+		//	아이디 유효성
 		function checkIdM(id) {
 		let regex = /^[a-z]+[a-z0-9]{5,19}$/g;
 		if(!regex.exec(id)) {
@@ -253,7 +275,23 @@ $(document).ready(function(){
 			checkIdResultM = true;
 		}
 	}
-
+	
+	//	이메일 유효성
+	function checkEmailM(email) {
+		let regex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+		if(!regex.exec(email)) {
+			$("#checkEmailResultM").html("양식을 맞춰주세요");
+			$("#checkEmailResultM").css("color", "red");
+			checkEmailResultM = false;
+		} else {
+			$("#checkEmailResultM").html("사용 가능합니다");
+			$("#checkEmailResultM").css("color", "#c26607");
+			checkEmailResultM = true;
+		}
+		
+	}
+	
+	//이름 유효성
 	function checkNameM(name) {
 		let regex = /^[가-힣]{1,10}$/; //2,10
 		if(!regex.exec(name)) {
@@ -267,6 +305,8 @@ $(document).ready(function(){
 			checkNameResultM = true;
 		}
 	}
+	
+	//패스워드 유효성
 	function checkPasswdM(pass) {
 		let regex = /^[A-Za-z0-9!@#$%^&*]{8,20}$/;
 		if(!regex.exec(pass)) {
@@ -357,11 +397,17 @@ $(document).ready(function(){
 			$("#manager_email").select();
 			alert("이메일 중복을 확인하여 주세요");
 			return false; // 현재 폼의 submit 동작을 중단하기 위해 false 리턴
+		} else if(!checkEmailResultM) {
+			alert("이메일 양식을 확인하여 주세요");
+			$("#manager_email").select();
+			return false; // 현재 폼의 submit 동작을 중단하기 위해 false 리턴
 		}
 		
 		return true;
 		
 	}
+
+//-------------------------------------------------회원,기업 중복체크---------------------------------------------
 
 //회원 중복아이디 조회
 function dupId() {
