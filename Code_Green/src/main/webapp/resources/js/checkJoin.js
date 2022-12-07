@@ -32,7 +32,7 @@ $(document).ready(function(){
 			success : function (data) {
 //				console.log("data : " +  data);
 				checkInput.attr('disabled',false);
-//				code =data;
+				code =data;
 				alert('인증번호가 전송되었습니다.')
 			}			
 		});
@@ -72,7 +72,7 @@ $(document).ready(function(){
 			success : function (data) {
 //				console.log("data : " +  data);
 				checkInput.attr('disabled',false);
-//				code =data;
+				code =data;
 				alert('인증번호가 전송되었습니다.')
 			}			
 		});
