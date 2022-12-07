@@ -46,7 +46,7 @@
 			 		 #{sell_total_price},		
 						<choose>                                     
 							<when test="sell_total_price == 0"> <!-- 적립금 사용해서 주문금액 0일때 -->    
-							  '배송대기중',            
+							  '배송준비중',            
 							</when>                                        
 							<when test="!sell_total_price == 0">     
 							  '주문완료',   
