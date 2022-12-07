@@ -74,8 +74,8 @@
                             <hr>
                             <br>
                                  <div class="card" style="width: 18rem;">
-						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_realfile }" alt="${brandInfo.manager_realfile }" />
-<%-- 						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_original_file }" alt="${brandInfo.manager_original_file }" /> --%>
+<%-- 						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_realfile }" alt="${brandInfo.manager_realfile }" /> --%>
+						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_original_file }" alt="${brandInfo.manager_original_file }" />
 <%-- 						  <img src="/Code_Green/resources/img/brand_logo/이츠리얼.jpg" alt="${brandInfo.manager_original_file }" /> --%>
 						  <div class="card-body">
 						    <h5 class="card-title">${brandInfo.manager_brandname }</h5>
