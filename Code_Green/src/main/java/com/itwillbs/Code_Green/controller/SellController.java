@@ -85,7 +85,7 @@ public class SellController {
 	// 주문완료
 	@ResponseBody
 	@PostMapping(value = "/payment_success")
-	public String payment_success(HttpSession session,
+	public void payment_success(HttpSession session,
 								 @RequestParam(name = "member_idx", value = "member_idx", required = false, defaultValue = "1") int member_idx,
 								 @RequestParam(name = "member_name", value = "member_name", required = false) String member_name,
 								 @RequestParam(name = "member_phone", value = "member_phone", required = false) String member_phone,
@@ -147,12 +147,14 @@ public class SellController {
 		int deleteCartCount = cart_service.afterOrderDeleteCart(member_idx);
 		session.setAttribute("cartCount", 0);//
 		
-		return "redirect:/payment_success_cardPayForm";
+//		return "redirect:/payment_success_cardPayForm?member_id=" + member_id;
 	}	
 	
 	// 주문완료 및 카드 결제 폼
 	@GetMapping(value = "/payment_success_cardPayForm") 
-	public String payment_success_cardPayForm(@RequestParam String member_id, Model model) {
+	public String payment_success_cardPayForm(Model model, HttpSession session) {
+		
+		String member_id = (String) session.getAttribute("sId");
 		
 		// 주문내역 불러오기
 		SellVO orderList = sell_service.getOrderList(member_id);
@@ -216,7 +218,7 @@ public class SellController {
 	
 	// 결제완료(카드) 페이지
 	@GetMapping(value = "/payment_success_card_thanks")
-	public String payment_success_card_thanks(@RequestParam String member_id, Model model) {
+	public String payment_success_card_thanks(Model model) {
 		
 		return "payment/payment_success_card";
 	}
