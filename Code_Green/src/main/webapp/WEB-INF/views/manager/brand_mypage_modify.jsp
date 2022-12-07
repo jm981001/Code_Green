@@ -59,8 +59,8 @@
                             <hr>
                             <br>
                           <div class="card" style="width: 25rem;">
-<%-- 						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_original_file }" alt="${brandInfo.manager_original_file }" /> --%>
-						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_realfile }" alt="${brandInfo.manager_realfile }" />
+						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_original_file }" alt="${brandInfo.manager_original_file }" />
+<%-- 						  <img src="/Code_Green/resources/img/brand_logo/${brandInfo.manager_realfile }" alt="${brandInfo.manager_realfile }" /> --%>
 						  <div class="card-body">
 						    <p class="card-text">${brandInfo.manager_realfile }</p>
                           </div>

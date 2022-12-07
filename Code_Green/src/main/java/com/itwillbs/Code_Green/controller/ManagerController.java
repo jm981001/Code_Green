@@ -265,11 +265,11 @@ public class ManagerController {
 		System.out.println("파일명 : " + originalFileName);
 		System.out.println("파일크기 : " + fileSize + " Byte");
 
-		String uuid = UUID.randomUUID().toString();
-		System.out.println("업로드 될 파일명 : " + uuid + "_" + originalFileName);
+//		String uuid = UUID.randomUUID().toString();
+		System.out.println("업로드 될 파일명 : "  + originalFileName);
 
 		manager.setManager_realfile(originalFileName);
-		manager.setManager_original_file(uuid + "_" + originalFileName);
+		manager.setManager_original_file(originalFileName);
 
 		// 새 파일 선택 여부와 관계없이 공통으로 수정 작업 요청
 		// Service - modifyBoard() 메서드 호출하여 수정 작업 요청
