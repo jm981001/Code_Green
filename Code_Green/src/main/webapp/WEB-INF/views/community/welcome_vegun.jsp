@@ -52,7 +52,7 @@
             <div class="container">
                 <ul class="breadcrumb">
                     <li><a href="/Code_Green">Home</a></li>
-                    <li><a href="community_main">커뮤니티</a></li>
+                    <li><a href="CommunityList.bo">커뮤니티</a></li>
                     <li>어서와, 비건은 처음이지?</li>
                 </ul>
             </div>
