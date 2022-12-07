@@ -87,7 +87,7 @@
                                     <select class="ps-select" name="searchType">
 										<option value="item_name">상품명</option>
                                         <option value="item_category">상품카테고리</option>
-                                        <option value="item_packing">보관상태</option>
+                                        <option value="item_packing">포장분류</option>
                                         <option value="item_stock">재고수</option>
                                     </select>
                                     </div>
