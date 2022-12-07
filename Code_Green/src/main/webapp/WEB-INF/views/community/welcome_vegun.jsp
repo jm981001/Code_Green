@@ -107,11 +107,11 @@
                             	</li>
                             </ul>
                             <div class="row">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 "><img class="mb-30" src="http://itwillbs17.cdn1.cafe24.com/채식단계.jpg" style="width: 1040px; height: 550px;">
+                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 "><img class="mb-30" src="/Code_Green/resources/img/채식단계.jpg" style="width: 1040px; height: 550px;">
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 "><img class="mb-30" src="http://itwillbs17.cdn1.cafe24.com/베지테리언.png" style="width: 520px; height: 250px;">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 "><img class="mb-30" src="/Code_Green/resources/img/베지테리언.png" style="width: 520px; height: 250px;">
                                 </div>
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 "><img class="mb-30" src="http://itwillbs17.cdn1.cafe24.com/세미 베지테리언.png" style="width: 520px; height: 250px;">
+                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12 "><img class="mb-30" src="/Code_Green/resources/img/세미베지테리언.png" style="width: 520px; height: 250px;">
                                 </div>
                             </div>
                         </div>
