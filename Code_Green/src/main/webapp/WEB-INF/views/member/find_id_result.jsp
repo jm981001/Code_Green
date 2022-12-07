@@ -37,7 +37,6 @@
     <link rel="stylesheet" href="/Code_Green/resources/js/test.js">
 <body>
  	<script type="text/javascript">
- 	alert("${msg}");
  	</script>
  	<jsp:include page="../inc/top.jsp"></jsp:include>
 	
