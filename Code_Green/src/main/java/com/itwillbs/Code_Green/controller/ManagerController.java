@@ -271,6 +271,14 @@ public class ManagerController {
 		manager.setManager_realfile(originalFileName);
 		manager.setManager_original_file(originalFileName);
 
+		
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		// BCryptPasswordEncoder 객체의 encode() 메서드를 호출하여 해싱 결과 리턴
+		String securePasswd = encoder.encode(manager.getManager_pass());
+		// MemberVO 객체의 패스워드에 암호문 저장
+		manager.setManager_pass(securePasswd);
+		
+		
 		// 새 파일 선택 여부와 관계없이 공통으로 수정 작업 요청
 		// Service - modifyBoard() 메서드 호출하여 수정 작업 요청
 		// => 파라미터 : BoardVO 객체, 리턴타입 : int(updateCount)
