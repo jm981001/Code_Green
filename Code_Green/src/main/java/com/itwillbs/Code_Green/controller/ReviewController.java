@@ -189,7 +189,7 @@ public class ReviewController {
 		//기존 실제 파일명을 변수에 저장 (새 파일 업로드시 삭제하기 위함)
 		String oldRealFile1 = file.getFile1();
 		String oldRealFile2 = file.getFile2();
-		
+		System.out.println(oldRealFile1);
 		
 		
 		String uploadDir = "/resources/commUpload"; // 가상의 업로드 경로
@@ -205,10 +205,9 @@ public class ReviewController {
 		
 		MultipartFile mFile = file.getFile_1();
 		MultipartFile mFile2 = file.getFile_2();
-		
-
 		boolean isNewFile1 = false;
-		if(!mFile.getOriginalFilename().equals("")) {
+
+		if(!mFile.getOriginalFilename().equals("") || oldRealFile1 != "") {
 			
 			String originalFileName = mFile.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString();
@@ -216,9 +215,8 @@ public class ReviewController {
 			
 			isNewFile1 = true;
 		}
-		
 		boolean isNewFile2 = false;
-		if(!mFile2.getOriginalFilename().equals("")) {
+		if(!mFile2.getOriginalFilename().equals("") ||  !mFile2.getOriginalFilename().equals("null_") ) {
 			
 			String originalFileName2 = mFile2.getOriginalFilename();
 			String uuid = UUID.randomUUID().toString();
@@ -334,8 +332,54 @@ public class ReviewController {
 	
 
 
+	//------------수정 파일 삭제1-------------------------------------------
+	@GetMapping(value = "/Delete_file1.bo")
+	public String deleteFile(@ModelAttribute BoardVO board, @RequestParam int board_idx, Model model, HttpSession session,@RequestParam String item_idx
+			,@ModelAttribute File_boardVO file,@RequestParam String item_category,@RequestParam String manager_brandname,@RequestParam String file1,@RequestParam String file2) {
+			
+
+		int updateFile = service.modifyFile_review(file);
+		System.out.println(updateFile);
+		if(updateFile== 0) {
+			model.addAttribute("msg", "파일수정 실패!");
+			return "member/fail_back3";
+		} 
+		
+		model.addAttribute("item_idx", item_idx);
+		model.addAttribute("manager_brandname",manager_brandname);
+		model.addAttribute("item_category",item_category);
+		model.addAttribute("board_idx",board_idx);
+		model.addAttribute("file1",file1);
+		model.addAttribute("file2",file2);
+
+		
+		return "redirect:/ReviewModify.bo";
+	}	
 	
 	
+	//------------수정 파일 삭제2-------------------------------------------
+	@GetMapping(value = "/Delete_file2.bo")
+	public String deleteFile2(@ModelAttribute BoardVO board, @RequestParam int board_idx, Model model, HttpSession session,@RequestParam String item_idx
+			,@ModelAttribute File_boardVO file,@RequestParam String item_category,@RequestParam String manager_brandname,@RequestParam String file1,@RequestParam String file2) {
+			
+
+		int updateFile = service.modifyFile_review2(file);
+		System.out.println(updateFile);
+		if(updateFile== 0) {
+			model.addAttribute("msg", "파일수정 실패!");
+			return "member/fail_back3";
+		} 
+		
+		model.addAttribute("item_idx", item_idx);
+		model.addAttribute("manager_brandname",manager_brandname);
+		model.addAttribute("item_category",item_category);
+		model.addAttribute("board_idx",board_idx);
+		model.addAttribute("file1",file1);
+		model.addAttribute("file2",file2);
+
+		
+		return "redirect:/ReviewModify.bo";
+	}	
 	
 	
 	
